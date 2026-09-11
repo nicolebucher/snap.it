@@ -56,7 +56,9 @@ export async function POST(request: NextRequest) {
   if (!isOutputFormat(format)) {
     return NextResponse.json({ error: messages.invalidFormat }, { status: 400 });
   }
-  if (files.length === 0) {
+  // Nur "spelling" kommt ohne Upload aus: die Diagnose selbst deckt die Rechtschreibprobleme
+  // auf, statt sie aus hochgeladenem Material abzuleiten.
+  if (files.length === 0 && format !== "spelling") {
     return NextResponse.json({ error: messages.missingFile }, { status: 400 });
   }
   if (files.length > MAX_FILES) {

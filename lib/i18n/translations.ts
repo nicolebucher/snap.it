@@ -81,6 +81,7 @@ const en = {
     buildingWorksheet: "Building your practice worksheet…",
     next: "Next",
     seeResults: "See results",
+    uploadOptionalHint: "No upload needed for Writing Skills — the check itself finds your gaps. Upload material only if you want the words drawn from it.",
   },
   footer: {
     imprint: "Imprint",
@@ -219,6 +220,7 @@ const de: typeof en = {
     buildingWorksheet: "Dein Übungsblatt wird erstellt…",
     next: "Weiter",
     seeResults: "Ergebnis ansehen",
+    uploadOptionalHint: "Für „Besser schreiben“ ist kein Upload nötig — der Check findet deine Lücken selbst. Lade Material nur hoch, wenn die Wörter daraus stammen sollen.",
   },
   footer: {
     imprint: "Impressum",

@@ -18,9 +18,16 @@ export async function generateSpellingDiagnostic(
     return spellingDiagnosticSchema.parse(MOCKS[locale]);
   }
 
+  const hasMaterial = fileBlocks.length > 0;
   return generateStructuredOutput({
-    system: buildSpellingDiagnosticSystemPrompt(profile, locale),
-    userContent: [...fileBlocks, { type: "text", text: "Create the spelling diagnostic from this material." }],
+    system: buildSpellingDiagnosticSystemPrompt(profile, locale, hasMaterial),
+    userContent: [
+      ...fileBlocks,
+      {
+        type: "text",
+        text: hasMaterial ? "Create the spelling diagnostic from this material." : "Create the spelling diagnostic.",
+      },
+    ],
     schema: spellingDiagnosticSchema,
     toolName: "create_spelling_diagnostic",
     toolDescription: "Creates a short spelling diagnostic (fill-in-the-blank sentences) based on the study material.",
