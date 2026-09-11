@@ -1,0 +1,24 @@
+{
+  "title": "Practice Sheet: Fractions",
+  "introduction": "On this worksheet you'll practice simplifying, expanding, comparing, adding, subtracting, multiplying and dividing fractions. The tasks get a little harder as you go - take your time and work through them calmly.",
+  "tasks": [
+    { "number": 1, "question": "Simplify the fraction 8/12 as far as possible.", "type": "offen", "points": 2, "answer": "2/3" },
+    { "number": 2, "question": "Simplify the fraction 15/20 completely.", "type": "offen", "points": 2, "answer": "3/4" },
+    { "number": 3, "question": "Which fraction equals 1/2?", "type": "multiple-choice", "options": ["2/5", "3/6", "4/9", "5/8"], "points": 2, "answer": "3/6" },
+    { "number": 4, "question": "Complete: 1/4 + 1/4 = ___", "type": "lueckentext", "points": 2, "answer": "1/2" },
+    { "number": 5, "question": "Expand the fraction 3/5 to the denominator 20.", "type": "offen", "points": 2, "answer": "12/20" },
+    { "number": 6, "question": "Expand the fraction 2/3 to the denominator 12.", "type": "offen", "points": 2, "answer": "8/12" },
+    { "number": 7, "question": "Which of the following fractions is already fully simplified?", "type": "multiple-choice", "options": ["4/8", "6/9", "5/7", "10/15"], "points": 2, "answer": "5/7" },
+    { "number": 8, "question": "Which is bigger: 3/4 or 5/8?", "type": "offen", "points": 3, "answer": "3/4, since 3/4 = 6/8 and 6/8 > 5/8" },
+    { "number": 9, "question": "Calculate 2/3 + 1/6.", "type": "offen", "points": 3, "answer": "5/6" },
+    { "number": 10, "question": "Calculate 1/4 + 1/2.", "type": "offen", "points": 3, "answer": "3/4" },
+    { "number": 11, "question": "Complete: 3/5 + ___ = 1", "type": "lueckentext", "points": 3, "answer": "2/5" },
+    { "number": 12, "question": "Calculate 5/6 - 1/3.", "type": "offen", "points": 3, "answer": "1/2" },
+    { "number": 13, "question": "Calculate 3/4 - 1/2.", "type": "offen", "points": 3, "answer": "1/4" },
+    { "number": 14, "question": "Which result do you get for 1/2 · 2/3?", "type": "multiple-choice", "options": ["1/3", "2/5", "3/6", "1/6"], "points": 3, "answer": "1/3" },
+    { "number": 15, "question": "Calculate 3/4 · 2/5.", "type": "offen", "points": 4, "answer": "3/10" },
+    { "number": 16, "question": "Calculate 2/3 ÷ 1/6.", "type": "offen", "points": 4, "answer": "4" },
+    { "number": 17, "question": "Calculate 5/8 ÷ 1/4.", "type": "offen", "points": 4, "answer": "5/2 = 2 1/2" },
+    { "number": 18, "question": "A cake is cut into 8 equal pieces. Lisa eats 3 pieces. Which fraction, fully simplified, describes the portion eaten?", "type": "offen", "points": 4, "answer": "3/8 (already simplified)" }
+  ]
+}

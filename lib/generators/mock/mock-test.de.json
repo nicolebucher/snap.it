@@ -1,0 +1,14 @@
+{
+  "title": "Testarbeit: Bruchrechnung",
+  "introduction": "Bearbeite alle Aufgaben sorgfältig. Viel Erfolg!",
+  "tasks": [
+    { "number": 1, "question": "Kürze den Bruch 15/20 vollständig.", "type": "offen", "points": 3, "answer": "3/4" },
+    { "number": 2, "question": "Welcher Bruch entspricht 0,5?", "type": "multiple-choice", "options": ["1/3", "1/2", "2/3", "1/4"], "points": 2, "answer": "1/2" },
+    { "number": 3, "question": "Berechne 3/4 - 1/4.", "type": "offen", "points": 3, "answer": "1/2" },
+    { "number": 4, "question": "Ergänze: 2/5 + ___ = 1", "type": "lueckentext", "points": 4, "answer": "3/5" },
+    { "number": 5, "question": "Berechne 1/3 + 1/4.", "type": "offen", "points": 4, "answer": "7/12" },
+    { "number": 6, "question": "Welcher Bruch ist am größten?", "type": "multiple-choice", "options": ["2/5", "1/2", "3/8", "1/3"], "points": 3, "answer": "1/2" },
+    { "number": 7, "question": "Erweitere 1/6 auf den Nenner 24.", "type": "offen", "points": 3, "answer": "4/24" },
+    { "number": 8, "question": "Berechne 5/6 - 1/3.", "type": "offen", "points": 4, "answer": "1/2" }
+  ]
+}

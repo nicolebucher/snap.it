@@ -1,0 +1,344 @@
+import type { GameData } from "@/types/generation";
+import { t, type Locale } from "@/lib/i18n/translations";
+
+/**
+ * Baut ein einzelnes, eigenständiges HTML-Dokument, das das Lernspiel ohne Server oder
+ * Build-Tooling offline abspielt (Doppelklick reicht). Reine Vanilla-JS-Neuimplementierung
+ * der gleichen Level-/Frage-/Punkte-Logik wie GameShell/LevelPlayer, damit der Schüler das
+ * Spiel herunterladen und weitergeben kann.
+ */
+export function buildStandaloneGameHtml(game: GameData, locale: Locale): string {
+  const labels = t(locale);
+  // </script> im generierten Text darf das Script-Tag nicht vorzeitig beenden.
+  const safeJson = JSON.stringify(game).replace(/</g, "\\u003c");
+  const difficultyMap = JSON.stringify(labels.difficulty).replace(/</g, "\\u003c");
+  const strings = JSON.stringify({
+    back: labels.game.back,
+    correct: labels.game.correct,
+    wrong: labels.game.wrong,
+    next: labels.game.next,
+    finishLevel: labels.game.finishLevel,
+    done: labels.game.done,
+  }).replace(/</g, "\\u003c");
+
+  return `<!DOCTYPE html>
+<html lang="${locale}">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet" />
+<title>${escapeHtml(game.gameTitle)}</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #000000;
+    color: #ffffff;
+    font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    min-height: 100vh;
+  }
+  #app { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+  .brand {
+    display: inline-block;
+    font-family: "Permanent Marker", cursive;
+    font-size: 20px;
+    color: #2dd4bf;
+    transform: rotate(-4deg);
+    text-shadow: 1.5px 1.5px 0 #000, -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000;
+    margin: 0 0 20px;
+  }
+  .brand .dot { color: #ffffff; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  .subject { color: #9ca3af; font-size: 13px; margin: 0 0 24px; }
+  .level-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .level-card {
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    background: #09090b;
+    color: #ffffff;
+    cursor: pointer;
+    font: inherit;
+  }
+  .level-card:hover:not(:disabled) { border-color: #2dd4bf; }
+  .level-card:disabled { color: #52525b; cursor: not-allowed; }
+  .level-card .row { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+  .level-card .difficulty { text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; color: #71717a; margin-top: 4px; }
+  .level-card .stars { margin-top: 8px; font-size: 14px; }
+  .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .back-link { background: none; border: none; color: #71717a; cursor: pointer; font-size: 13px; padding: 0; }
+  .back-link:hover { color: #d4d4d8; }
+  .question-index { color: #71717a; font-size: 13px; }
+  .card {
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    padding: 20px;
+    background: #09090b;
+  }
+  .prompt { font-weight: 600; margin: 0 0 16px; }
+  .option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 1px solid #27272a;
+    background: transparent;
+    color: #ffffff;
+    font: inherit;
+    cursor: pointer;
+  }
+  .option:hover:not(:disabled) { border-color: #2dd4bf; }
+  .option:disabled { cursor: not-allowed; }
+  .option.correct { border-color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+  .option.wrong { border-color: #fb923c; background: rgba(251, 146, 60, 0.1); }
+  .option.muted { border-color: #18181b; color: #52525b; }
+  .feedback { margin-top: 16px; padding: 14px; border-radius: 8px; font-size: 14px; }
+  .feedback.correct { background: rgba(74, 222, 128, 0.1); color: #86efac; }
+  .feedback.wrong { background: rgba(251, 146, 60, 0.1); color: #fdba74; }
+  .feedback p:first-child { font-weight: 600; margin: 0 0 4px; }
+  .feedback p { margin: 0; }
+  .primary-btn {
+    margin-top: 16px;
+    background: #2dd4bf;
+    color: #000000;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 20px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .primary-btn:hover { background: #5eead4; }
+  .result-banner { background: rgba(45, 212, 191, 0.1); border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 24px; }
+  .result-banner p:first-child { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
+  .result-banner p { margin: 0; color: #a1a1aa; font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var GAME = ${safeJson};
+var DIFFICULTY = ${difficultyMap};
+var STR = ${strings};
+var state = { results: {}, activeLevelId: null, questionIndex: 0, correctCount: 0, selected: null };
+var sortedLevels = GAME.levels.slice().sort(function (a, b) { return a.id - b.id; });
+
+function isUnlocked(index) {
+  if (index === 0) return true;
+  return state.results[sortedLevels[index - 1].id] !== undefined;
+}
+
+function starsFor(ratio) {
+  if (ratio === 1) return 3;
+  if (ratio >= 0.7) return 2;
+  if (ratio >= 0.4) return 1;
+  return 0;
+}
+
+function starString(stars) {
+  return "\\u2b50".repeat(stars) + "\\u2606".repeat(3 - stars);
+}
+
+function brandHtml() {
+  return '<div class="brand">snap<span class="dot">.</span>it</div>';
+}
+
+function render() {
+  var app = document.getElementById("app");
+  if (state.activeLevelId !== null) {
+    app.innerHTML = brandHtml() + renderLevel();
+  } else {
+    app.innerHTML = brandHtml() + renderMap();
+  }
+  attachHandlers();
+}
+
+function renderMap() {
+  var allDone = sortedLevels.every(function (level) { return state.results[level.id] !== undefined; });
+  var totalStars = sortedLevels.reduce(function (sum, level) { return sum + ((state.results[level.id] && state.results[level.id].stars) || 0); }, 0);
+  var maxStars = sortedLevels.length * 3;
+
+  var banner = allDone
+    ? '<div class="result-banner"><p>' + escapeHtml(STR.done) + '</p><p>' + totalStars + " / " + maxStars + " \\u2b50</p></div>"
+    : "";
+
+  var cards = sortedLevels
+    .map(function (level, index) {
+      var unlocked = isUnlocked(index);
+      var result = state.results[level.id];
+      var starsHtml = result ? '<div class="stars">' + starString(result.stars) + "</div>" : "";
+      var difficultyLabel = DIFFICULTY[level.difficulty] || level.difficulty;
+      return (
+        '<button class="level-card" data-level-id="' +
+        level.id +
+        '" ' +
+        (unlocked ? "" : "disabled") +
+        '><div class="row"><span>Level ' +
+        (index + 1) +
+        ": " +
+        escapeHtml(level.title) +
+        "</span>" +
+        (unlocked ? "" : "\\u{1F512}") +
+        '</div><div class="difficulty">' +
+        escapeHtml(difficultyLabel) +
+        "</div>" +
+        starsHtml +
+        "</button>"
+      );
+    })
+    .join("");
+
+  return (
+    "<h1>" +
+    escapeHtml(GAME.gameTitle) +
+    '</h1><p class="subject">' +
+    escapeHtml(GAME.subject) +
+    "</p>" +
+    banner +
+    '<div class="level-grid">' +
+    cards +
+    "</div>"
+  );
+}
+
+function renderLevel() {
+  var level = sortedLevels.find(function (l) { return l.id === state.activeLevelId; });
+  var question = level.questions[state.questionIndex];
+  var isLast = state.questionIndex === level.questions.length - 1;
+  var answered = state.selected !== null;
+
+  var options = question.options
+    .map(function (option, i) {
+      var cls = "option";
+      if (answered) {
+        if (i === question.correctIndex) cls += " correct";
+        else if (i === state.selected) cls += " wrong";
+        else cls += " muted";
+      }
+      return (
+        '<button class="' +
+        cls +
+        '" data-option-index="' +
+        i +
+        '" ' +
+        (answered ? "disabled" : "") +
+        ">" +
+        escapeHtml(option) +
+        "</button>"
+      );
+    })
+    .join("");
+
+  var feedback = "";
+  if (answered) {
+    var isCorrect = state.selected === question.correctIndex;
+    feedback =
+      '<div class="feedback ' +
+      (isCorrect ? "correct" : "wrong") +
+      '"><p>' +
+      escapeHtml(isCorrect ? STR.correct : STR.wrong) +
+      "</p><p>" +
+      escapeHtml(question.explanation) +
+      "</p></div>" +
+      '<button class="primary-btn" id="next-btn">' +
+      escapeHtml(isLast ? STR.finishLevel : STR.next) +
+      "</button>";
+  }
+
+  return (
+    '<div class="top-row"><button class="back-link" id="back-btn">\\u2190 ' +
+    escapeHtml(STR.back) +
+    '</button><span class="question-index">' +
+    (state.questionIndex + 1) +
+    "/" +
+    level.questions.length +
+    '</span></div><h2>' +
+    escapeHtml(level.title) +
+    '</h2><div class="card"><p class="prompt">' +
+    escapeHtml(question.prompt) +
+    "</p>" +
+    options +
+    "</div>" +
+    feedback
+  );
+}
+
+function attachHandlers() {
+  var app = document.getElementById("app");
+  var levelButtons = app.querySelectorAll(".level-card");
+  for (var i = 0; i < levelButtons.length; i++) {
+    levelButtons[i].addEventListener("click", function (e) {
+      state.activeLevelId = Number(e.currentTarget.getAttribute("data-level-id"));
+      state.questionIndex = 0;
+      state.correctCount = 0;
+      state.selected = null;
+      render();
+    });
+  }
+
+  var backBtn = app.querySelector("#back-btn");
+  if (backBtn) {
+    backBtn.addEventListener("click", function () {
+      state.activeLevelId = null;
+      render();
+    });
+  }
+
+  var optionButtons = app.querySelectorAll(".option");
+  for (var j = 0; j < optionButtons.length; j++) {
+    optionButtons[j].addEventListener("click", function (e) {
+      if (state.selected !== null) return;
+      var level = sortedLevels.find(function (l) { return l.id === state.activeLevelId; });
+      var question = level.questions[state.questionIndex];
+      var optionIndex = Number(e.currentTarget.getAttribute("data-option-index"));
+      state.selected = optionIndex;
+      if (optionIndex === question.correctIndex) state.correctCount += 1;
+      render();
+    });
+  }
+
+  var nextBtn = app.querySelector("#next-btn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", function () {
+      var level = sortedLevels.find(function (l) { return l.id === state.activeLevelId; });
+      var isLast = state.questionIndex === level.questions.length - 1;
+      if (isLast) {
+        var ratio = state.correctCount / level.questions.length;
+        state.results[level.id] = { stars: starsFor(ratio), score: state.correctCount };
+        state.activeLevelId = null;
+        state.questionIndex = 0;
+        state.correctCount = 0;
+        state.selected = null;
+      } else {
+        state.questionIndex += 1;
+        state.selected = null;
+      }
+      render();
+    });
+  }
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+render();
+</script>
+</body>
+</html>
+`;
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
