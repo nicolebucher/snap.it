@@ -65,6 +65,17 @@ export function ProfileForm({
             className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
           />
         </label>
+        <label className="flex flex-col gap-1 text-sm font-medium sm:col-span-2">
+          {t.profile.notes}
+          <textarea
+            rows={2}
+            maxLength={300}
+            placeholder={t.profile.notesPlaceholder}
+            value={profile.notes ?? ""}
+            onChange={(e) => onChange({ ...profile, notes: e.target.value || undefined })}
+            className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
+          />
+        </label>
       </div>
     </div>
   );

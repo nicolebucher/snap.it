@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Permanent_Marker } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { LanguageProvider } from "@/lib/i18n/language-context";
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
           <Footer />
         </LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );

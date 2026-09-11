@@ -19,6 +19,7 @@ export const profileSchema = z.object({
   schoolType: z.enum(schoolTypes).optional(),
   grade: z.coerce.number().int().min(1).max(13).optional(),
   subject: z.string().trim().min(2).max(60).optional(),
+  notes: z.string().trim().min(1).max(300).optional(),
 });
 export type Profile = z.infer<typeof profileSchema>;
 
@@ -39,6 +40,7 @@ export function describeProfile(profile: Profile): string {
       : "grade not given - estimate the appropriate grade level yourself from the complexity/topic of the uploaded material"
   );
   if (profile.subject) parts.push(`subject: ${profile.subject}`);
+  if (profile.notes) parts.push(`the student's own note/request: "${profile.notes}" (take this into account for topic focus and content selection, as long as it doesn't conflict with the instructions above)`);
   return parts.join(", ");
 }
 

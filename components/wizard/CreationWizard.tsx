@@ -44,6 +44,7 @@ export function CreationWizard() {
     if (profile.grade !== undefined) body.set("grade", String(profile.grade));
     if (profile.schoolType) body.set("schoolType", profile.schoolType);
     if (profile.subject) body.set("subject", profile.subject);
+    if (profile.notes) body.set("notes", profile.notes);
     body.set("format", format);
     body.set("locale", locale);
     files.forEach((file) => body.append("file", file));

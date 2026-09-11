@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
     schoolType: nullToUndefined(formData.get("schoolType")),
     grade: nullToUndefined(formData.get("grade")),
     subject: nullToUndefined(formData.get("subject")),
+    notes: nullToUndefined(formData.get("notes")),
   });
   if (!profileResult.success) {
     return NextResponse.json({ error: messages.invalidProfile }, { status: 400 });

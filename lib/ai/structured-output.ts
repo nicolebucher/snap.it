@@ -21,8 +21,9 @@ function schemaToToolInputSchema(schema: z.ZodTypeAny): Anthropic.Messages.Tool.
 
 /**
  * Erzwingt über tool_choice ein einziges strukturiertes JSON-Ergebnis und validiert es
- * gegen das Zod-Schema. Bei ungültiger Antwort wird einmal mit Fehlerhinweis neu versucht,
- * damit eine leicht abweichende Modellantwort nicht die ganze Generierung crasht.
+ * gegen das Zod-Schema. Bei ungültiger oder abgeschnittener Antwort wird mit Fehlerhinweis
+ * neu versucht, damit eine leicht abweichende oder trunkierte Modellantwort nicht die ganze
+ * Generierung crasht.
  */
 export async function generateStructuredOutput<T extends z.ZodTypeAny>({
   system,
@@ -41,17 +42,22 @@ export async function generateStructuredOutput<T extends z.ZodTypeAny>({
 
   let lastError: string | null = null;
 
-  for (let attempt = 0; attempt < 2; attempt++) {
+  for (let attempt = 0; attempt < 3; attempt++) {
     const message = await client.messages.create({
       model: CLAUDE_MODEL,
       max_tokens: maxTokens,
       system: lastError
-        ? `${system}\n\nDein letzter Versuch war ungültig (${lastError}). Bitte antworte exakt nach dem vorgegebenen Schema.`
+        ? `${system}\n\nDein letzter Versuch war ungültig (${lastError}). Bitte antworte exakt nach dem vorgegebenen Schema und halte dich an die unteren Grenzen der erlaubten Mengen (z.B. Anzahl Level/Fragen/Aufgaben), damit die Antwort sicher vollständig bleibt.`
         : system,
       tools: [tool],
       tool_choice: { type: "tool", name: toolName },
       messages: [{ role: "user", content: userContent }],
     });
+
+    if (message.stop_reason === "max_tokens") {
+      lastError = "Antwort wurde wegen Längenbegrenzung abgeschnitten";
+      continue;
+    }
 
     const toolUse = message.content.find((block) => block.type === "tool_use");
     if (!toolUse || toolUse.type !== "tool_use") {

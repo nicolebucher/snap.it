@@ -80,7 +80,7 @@ export function FileUpload({
           if (dropped.length > 0) void handleFiles(dropped);
         }}
         onClick={() => inputRef.current?.click()}
-        className="cursor-pointer rounded-xl border-2 border-dashed border-zinc-700 p-6 text-center hover:border-teal-400"
+        className="cursor-pointer rounded-xl border-2 border-dashed border-teal-400/60 p-6 text-center hover:border-teal-400"
       >
         <input
           ref={inputRef}

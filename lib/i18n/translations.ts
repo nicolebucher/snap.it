@@ -17,6 +17,8 @@ const en = {
     schoolTypeNone: "No preference",
     subject: "Subject (optional)",
     subjectPlaceholder: "e.g. Math",
+    notes: "Special focus or comments (optional)",
+    notesPlaceholder: "e.g. \"Please focus on chapter 3\" or \"I struggle with word problems\"",
   },
   schoolTypeLabels: {
     Grundschule: "Primary school",
@@ -56,6 +58,7 @@ const en = {
   footer: {
     imprint: "Imprint",
     terms: "Service Agreement",
+    privacy: "Privacy Policy",
     feedback: "Feedback",
   },
   feedback: {
@@ -122,6 +125,8 @@ const de: typeof en = {
     schoolTypeNone: "Keine Angabe",
     subject: "Fach (optional)",
     subjectPlaceholder: "z.B. Mathematik",
+    notes: "Besonderer Fokus oder Kommentare (optional)",
+    notesPlaceholder: "z.B. \"Bitte Kapitel 3 fokussieren\" oder \"Ich habe Schwierigkeiten mit Textaufgaben\"",
   },
   schoolTypeLabels: {
     Grundschule: "Grundschule",
@@ -161,6 +166,7 @@ const de: typeof en = {
   footer: {
     imprint: "Impressum",
     terms: "Nutzungsvereinbarung",
+    privacy: "Datenschutz",
     feedback: "Feedback",
   },
   feedback: {

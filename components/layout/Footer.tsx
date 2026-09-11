@@ -15,6 +15,9 @@ export function Footer() {
         <Link href="/terms" className="hover:text-teal-400">
           {t.footer.terms}
         </Link>
+        <Link href="/privacy" className="hover:text-teal-400">
+          {t.footer.privacy}
+        </Link>
         <Link href="/feedback" className="hover:text-teal-400">
           {t.footer.feedback}
         </Link>
