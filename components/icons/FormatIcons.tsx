@@ -53,6 +53,21 @@ export function PodcastIcon({ className }: IconProps) {
   );
 }
 
+export function SpellingIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <path
+        d="M4 19l1.2-4.4L15 5l4 4-9.8 9.6L4 19Z"
+        stroke="currentColor"
+        strokeWidth="2.1"
+        strokeLinejoin="round"
+      />
+      <path d="M13 7l4 4" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" />
+      <path d="M9.5 17.5h3" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function GameIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>

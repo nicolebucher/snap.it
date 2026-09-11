@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Level } from "@/types/generation";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { QuestionCard } from "./QuestionCard";
+import { FillBlankCard } from "./FillBlankCard";
 import { SnapEffect } from "./SnapEffect";
 
 export interface LevelResult {
@@ -28,6 +29,8 @@ export function LevelPlayer({
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
+  const [typedValue, setTypedValue] = useState("");
+  const [checked, setChecked] = useState(false);
   const [snapBurst, setSnapBurst] = useState<{ key: number; amount: number } | null>(null);
   // Mirrors `answered`/advance-in-progress synchronously so a second click/tap event
   // (e.g. a touch device firing both `touchend` and a synthetic `click`) landing before
@@ -44,23 +47,37 @@ export function LevelPlayer({
 
   const question = level.questions[index];
   const isLast = index === level.questions.length - 1;
-  const answered = selected !== null;
-  const isCorrect = answered && selected === question.correctIndex;
+  const isMultipleChoice = question.type === "multiple-choice";
+  const answered = isMultipleChoice ? selected !== null : checked;
+  const isCorrect = isMultipleChoice
+    ? answered && selected === question.correctIndex
+    : answered && typedValue.trim() === question.correctAnswer;
   const snapsForThisQuestion = SNAPS_BY_DIFFICULTY[level.difficulty] ?? 10;
 
   useEffect(() => {
     readyAtRef.current = Date.now() + 400;
   }, [index]);
 
-  function handleSelect(optionIndex: number) {
-    if (answeredRef.current || Date.now() < readyAtRef.current) return;
-    answeredRef.current = true;
-    setSelected(optionIndex);
-    if (optionIndex === question.correctIndex) {
+  function awardIfCorrect(correct: boolean) {
+    if (correct) {
       setCorrectCount((c) => c + 1);
       onSnap(snapsForThisQuestion);
       setSnapBurst({ key: Date.now(), amount: snapsForThisQuestion });
     }
+  }
+
+  function handleSelect(optionIndex: number) {
+    if (answeredRef.current || Date.now() < readyAtRef.current) return;
+    answeredRef.current = true;
+    setSelected(optionIndex);
+    awardIfCorrect(optionIndex === question.correctIndex);
+  }
+
+  function handleCheckTyped() {
+    if (answeredRef.current || Date.now() < readyAtRef.current || typedValue.trim() === "") return;
+    answeredRef.current = true;
+    setChecked(true);
+    awardIfCorrect(typedValue.trim() === question.correctAnswer);
   }
 
   function handleNext() {
@@ -73,6 +90,8 @@ export function LevelPlayer({
       onComplete({ stars, score: correctCount });
     } else {
       setSelected(null);
+      setTypedValue("");
+      setChecked(false);
       answeredRef.current = false;
       advancingRef.current = false;
       setIndex((i) => i + 1);
@@ -89,7 +108,18 @@ export function LevelPlayer({
       </div>
       <h2 className="mb-4 text-lg font-semibold">{level.title}</h2>
       <div className="relative">
-        <QuestionCard question={question} selected={selected} onSelect={handleSelect} />
+        {isMultipleChoice ? (
+          <QuestionCard question={question} selected={selected} onSelect={handleSelect} />
+        ) : (
+          <FillBlankCard
+            prompt={question.prompt}
+            value={typedValue}
+            checked={checked}
+            isCorrect={isCorrect}
+            onChange={setTypedValue}
+            onSubmit={handleCheckTyped}
+          />
+        )}
         {snapBurst && <SnapEffect key={snapBurst.key} amount={snapBurst.amount} snapsUnit={t.game.snapsUnit} />}
       </div>
       {answered && (
@@ -99,6 +129,9 @@ export function LevelPlayer({
           }`}
         >
           <p className="mb-1 font-medium">{isCorrect ? t.game.correct : t.game.wrong}</p>
+          {!isCorrect && !isMultipleChoice && (
+            <p className="mb-1">{t.game.correctAnswerWas(question.correctAnswer ?? "")}</p>
+          )}
           <p>{question.explanation}</p>
         </div>
       )}

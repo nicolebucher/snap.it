@@ -3,13 +3,14 @@
 import type { ComponentType } from "react";
 import type { OutputFormat } from "@/types/generation";
 import { useLanguage } from "@/lib/i18n/language-context";
-import { GameIcon, PodcastIcon, TestIcon, WorksheetIcon } from "@/components/icons/FormatIcons";
+import { GameIcon, PodcastIcon, SpellingIcon, TestIcon, WorksheetIcon } from "@/components/icons/FormatIcons";
 
 const ICONS: Record<OutputFormat, ComponentType<{ className?: string }>> = {
   worksheet: WorksheetIcon,
   test: TestIcon,
   game: GameIcon,
   podcast: PodcastIcon,
+  spelling: SpellingIcon,
 };
 
 const ROTATIONS: Record<OutputFormat, string> = {
@@ -17,6 +18,7 @@ const ROTATIONS: Record<OutputFormat, string> = {
   test: "rotate-3",
   game: "-rotate-3",
   podcast: "rotate-6",
+  spelling: "rotate-2",
 };
 
 const DRIP_PATH = "M10 2c-2 4-4 6-4 9a4 4 0 0 0 8 0c0-3-2-5-4-9z";
@@ -34,6 +36,7 @@ export function FormatSelector({
     { value: "test", ...t.format.test },
     { value: "game", ...t.format.game },
     { value: "podcast", ...t.format.podcast },
+    { value: "spelling", ...t.format.spelling },
   ];
 
   return (

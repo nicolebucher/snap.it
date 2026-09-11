@@ -1,0 +1,17 @@
+{
+  "title": "Rechtschreibcheck: Bruchrechnung-Wortschatz",
+  "items": [
+    { "number": 1, "sentence": "Man kann einen Bruch ___, indem man Zähler und Nenner durch dieselbe Zahl teilt.", "correctSpelling": "kürzen" },
+    { "number": 2, "sentence": "Die untere Zahl eines Bruchs heißt der ___.", "correctSpelling": "Nenner" },
+    { "number": 3, "sentence": "Die obere Zahl eines Bruchs heißt der ___.", "correctSpelling": "Zähler" },
+    { "number": 4, "sentence": "Wenn man Zähler und Nenner mit derselben Zahl multipliziert, ___ man den Bruch.", "correctSpelling": "erweitert" },
+    { "number": 5, "sentence": "Ein Bruch, der nicht weiter gekürzt werden kann, ist vollständig ___.", "correctSpelling": "gekürzt" },
+    { "number": 6, "sentence": "Zwei Brüche mit demselben Wert nennt man ___.", "correctSpelling": "wertgleich" },
+    { "number": 7, "sentence": "Ein Bruch, der größer als ein Ganzes ist, heißt ___ Bruch.", "correctSpelling": "unechter" },
+    { "number": 8, "sentence": "Beim Teilen von Brüchen multipliziert man mit dem ___.", "correctSpelling": "Kehrwert" },
+    { "number": 9, "sentence": "Eine ganze Zahl neben einem Bruch nennt man eine ___ Zahl.", "correctSpelling": "gemischte" },
+    { "number": 10, "sentence": "Eine Zahl, durch die beide Nenner ohne Rest teilbar sind, ist ein gemeinsamer ___.", "correctSpelling": "Nenner" },
+    { "number": 11, "sentence": "Brüche beschreiben Teile eines ___.", "correctSpelling": "Ganzen" },
+    { "number": 12, "sentence": "Um herauszufinden, wie oft ein Teil in ein Ganzes passt, nutzt man die ___.", "correctSpelling": "Division" }
+  ]
+}
