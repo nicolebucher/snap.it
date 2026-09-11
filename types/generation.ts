@@ -23,21 +23,28 @@ export const profileSchema = z.object({
 export type Profile = z.infer<typeof profileSchema>;
 
 // Nur für den (englischen) System-Prompt gedacht - beschreibt die Zielgruppe fürs Modell,
-// unabhängig von der später gewählten Ausgabesprache des generierten Inhalts.
+// unabhängig von der später gewählten Ausgabesprache des generierten Inhalts. Wenn Angaben
+// fehlen: Oberschule (allgemeine Sekundarstufe) als Standardannahme, Klasse aus dem Material schätzen.
 export function describeProfile(profile: Profile): string {
   const parts: string[] = [];
-  if (profile.age !== undefined) parts.push(`${profile.age} years old`);
-  if (profile.schoolType) parts.push(profile.schoolType);
-  if (profile.grade !== undefined) parts.push(`grade ${profile.grade}`);
+  parts.push(profile.age !== undefined ? `${profile.age} years old` : "age not given");
+  parts.push(
+    profile.schoolType
+      ? profile.schoolType
+      : "no school type given - assume a general secondary school (\"Oberschule\") student"
+  );
+  parts.push(
+    profile.grade !== undefined
+      ? `grade ${profile.grade}`
+      : "grade not given - estimate the appropriate grade level yourself from the complexity/topic of the uploaded material"
+  );
   if (profile.subject) parts.push(`subject: ${profile.subject}`);
-  return parts.length > 0
-    ? parts.join(", ")
-    : "no specific target-audience details provided - choose a level that is broadly accessible for students";
+  return parts.join(", ");
 }
 
-// Nutzersichtbare Meta-Zeile auf dem PDF - hier zählt die UI-Sprache.
-export function formatProfileMeta(profile: Profile, locale: "en" | "de"): string {
-  const gradeLabel = locale === "de" ? "Klasse" : "Grade";
+// Nutzersichtbare Meta-Zeile auf dem PDF - die Wortwahl kommt von der KI (data.labels.grade),
+// passend zur Sprache des generierten Inhalts statt zur UI-Sprache.
+export function formatProfileMeta(profile: Profile, gradeLabel: string): string {
   return [profile.subject, profile.schoolType, profile.grade !== undefined ? `${gradeLabel} ${profile.grade}` : undefined]
     .filter((part): part is string => !!part)
     .join(" · ");
@@ -46,18 +53,35 @@ export function formatProfileMeta(profile: Profile, locale: "en" | "de"): string
 export const taskSchema = z.object({
   number: z.number(),
   question: z.string(),
-  type: z.enum(["offen", "multiple-choice", "lueckentext"]),
+  type: z.enum(["offen", "multiple-choice", "lueckentext", "unterstreichen", "zuordnen"]),
+  // multiple-choice: die Antwortoptionen. unterstreichen: die Wörter/Phrasen zum Ankreuzen/Unterstreichen.
   options: z.array(z.string()).optional(),
+  // nur für type "zuordnen": linke/rechte Spalte zum Zuordnen (rechte Spalte wird beim Rendern gemischt).
+  pairs: z.array(z.object({ left: z.string(), right: z.string() })).optional(),
   points: z.number(),
   answer: z.string(),
 });
 export type Task = z.infer<typeof taskSchema>;
+
+// Von der KI in derselben Sprache wie der restliche Inhalt zurückgegebene Beschriftungen -
+// dadurch passen die PDF-Überschriften zur Dokumentsprache, unabhängig vom UI-Sprachschalter.
+export const pdfLabelsSchema = z.object({
+  task: z.string(),
+  points: z.string(),
+  totalPoints: z.string(),
+  solutions: z.string(),
+  name: z.string(),
+  date: z.string(),
+  grade: z.string(),
+});
+export type PdfLabels = z.infer<typeof pdfLabelsSchema>;
 
 // Arbeitsblatt: bewusst umfangreich (mind. 3 PDF-Seiten gewünscht).
 export const worksheetSchema = z.object({
   title: z.string(),
   introduction: z.string(),
   tasks: z.array(taskSchema).min(16).max(24),
+  labels: pdfLabelsSchema,
 });
 export type WorksheetData = z.infer<typeof worksheetSchema>;
 
@@ -66,6 +90,7 @@ export const testSchema = z.object({
   title: z.string(),
   introduction: z.string(),
   tasks: z.array(taskSchema).min(6).max(10),
+  labels: pdfLabelsSchema,
 });
 
 export const questionSchema = z.object({

@@ -11,7 +11,7 @@ const MOCKS: Record<Locale, unknown> = { en: mockWorksheetEn, de: mockWorksheetD
 
 export async function generateWorksheet(
   profile: Profile,
-  fileBlock: ClaudeFileBlock,
+  fileBlocks: ClaudeFileBlock[],
   locale: Locale
 ): Promise<WorksheetData> {
   if (isMockMode()) {
@@ -20,7 +20,7 @@ export async function generateWorksheet(
 
   return generateStructuredOutput({
     system: buildWorksheetSystemPrompt(profile, locale),
-    userContent: [fileBlock, { type: "text", text: "Create a matching worksheet from this material." }],
+    userContent: [...fileBlocks, { type: "text", text: "Create a matching worksheet from this material." }],
     schema: worksheetSchema,
     toolName: "create_worksheet",
     toolDescription: "Creates a structured practice worksheet based on the study material.",

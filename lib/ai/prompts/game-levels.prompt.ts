@@ -7,13 +7,21 @@ export function buildGameLevelsSystemPrompt(profile: Profile, locale: Locale): s
   return `You create the content for a quiz-style learning game for a student.
 
 Target audience: ${describeProfile(profile)}.
+Calibrate difficulty, vocabulary and complexity precisely to this target audience. If a school
+type and/or grade were given, match them exactly; otherwise infer the right level yourself from
+the material (see instructions above) - never default to a generic/all-ages level.
 
-Use the attached file (study material, notes, or a photo of school material) as the content basis.
-Create 2 to 5 levels with increasing difficulty (easy, medium, hard) that turn the material from the
-file into engaging multiple-choice questions. Each level should feel like its own, longer round of practice.
+Use the attached material (one or more files: study material, notes, or photos of school material)
+as the content basis. Create 2 to 5 levels that turn the material into engaging multiple-choice
+questions. Levels are NOT a strict linear progression the student must unlock in order - the
+player can jump into any level directly. Instead, each level should represent a distinct
+sub-topic, chapter, or skill/question type found in the material (e.g. different chapters,
+vocabulary vs. grammar, theory vs. application) so a student can pick exactly what they want to
+practice. Give each level the "difficulty" that naturally fits its own content (it does not need
+to increase from level to level).
 
 For every level:
-- a short, motivating title
+- a short, motivating title that names the specific sub-topic/category it covers
 - at least 10 (up to 15) questions, each with 3 to 4 answer options and exactly one correct answer (correctIndex)
 - a short, clear explanation per question of why the answer is correct
 - questions within a level should vary in wording and example, not repeat each other

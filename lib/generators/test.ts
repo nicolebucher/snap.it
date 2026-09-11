@@ -9,14 +9,14 @@ import mockTestDe from "./mock/mock-test.de.json";
 
 const MOCKS: Record<Locale, unknown> = { en: mockTestEn, de: mockTestDe };
 
-export async function generateTest(profile: Profile, fileBlock: ClaudeFileBlock, locale: Locale): Promise<WorksheetData> {
+export async function generateTest(profile: Profile, fileBlocks: ClaudeFileBlock[], locale: Locale): Promise<WorksheetData> {
   if (isMockMode()) {
     return testSchema.parse(MOCKS[locale]);
   }
 
   return generateStructuredOutput({
     system: buildTestSystemPrompt(profile, locale),
-    userContent: [fileBlock, { type: "text", text: "Create a matching test from this material." }],
+    userContent: [...fileBlocks, { type: "text", text: "Create a matching test from this material." }],
     schema: testSchema,
     toolName: "create_test",
     toolDescription: "Creates a structured test (classroom exam) based on the study material.",

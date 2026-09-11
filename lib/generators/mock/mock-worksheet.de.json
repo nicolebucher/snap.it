@@ -19,6 +19,9 @@
     { "number": 15, "question": "Berechne 3/4 · 2/5.", "type": "offen", "points": 4, "answer": "3/10" },
     { "number": 16, "question": "Berechne 2/3 : 1/6.", "type": "offen", "points": 4, "answer": "4" },
     { "number": 17, "question": "Berechne 5/8 : 1/4.", "type": "offen", "points": 4, "answer": "5/2 = 2 1/2" },
-    { "number": 18, "question": "Ein Kuchen wird in 8 gleiche Stücke geteilt. Lisa isst 3 Stück. Welcher Bruch beschreibt den gegessenen Anteil, vollständig gekürzt?", "type": "offen", "points": 4, "answer": "3/8 (bereits gekürzt)" }
-  ]
+    { "number": 18, "question": "Ein Kuchen wird in 8 gleiche Stücke geteilt. Lisa isst 3 Stück. Welcher Bruch beschreibt den gegessenen Anteil, vollständig gekürzt?", "type": "offen", "points": 4, "answer": "3/8 (bereits gekürzt)" },
+    { "number": 19, "question": "Unterstreiche den Bruch, der vollständig gekürzt ist:", "type": "unterstreichen", "options": ["4/8", "3/6", "5/9", "10/20"], "points": 2, "answer": "5/9" },
+    { "number": 20, "question": "Ordne jedem Bruch seine gekürzte Form zu.", "type": "zuordnen", "pairs": [{ "left": "2/4", "right": "1/2" }, { "left": "3/9", "right": "1/3" }, { "left": "6/8", "right": "3/4" }], "points": 3, "answer": "1-1/2, 2-1/3, 3-3/4" }
+  ],
+  "labels": { "task": "Aufgabe", "points": "Punkte", "totalPoints": "Punkte gesamt", "solutions": "Lösungen", "name": "Name", "date": "Datum", "grade": "Klasse" }
 }

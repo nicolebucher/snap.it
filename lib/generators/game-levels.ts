@@ -9,14 +9,14 @@ import mockLevelsDe from "./mock/mock-levels.de.json";
 
 const MOCKS: Record<Locale, unknown> = { en: mockLevelsEn, de: mockLevelsDe };
 
-export async function generateGameLevels(profile: Profile, fileBlock: ClaudeFileBlock, locale: Locale): Promise<GameData> {
+export async function generateGameLevels(profile: Profile, fileBlocks: ClaudeFileBlock[], locale: Locale): Promise<GameData> {
   if (isMockMode()) {
     return gameSchema.parse(MOCKS[locale]);
   }
 
   return generateStructuredOutput({
     system: buildGameLevelsSystemPrompt(profile, locale),
-    userContent: [fileBlock, { type: "text", text: "Create the levels for the learning game from this material." }],
+    userContent: [...fileBlocks, { type: "text", text: "Create the levels for the learning game from this material." }],
     schema: gameSchema,
     toolName: "create_game_levels",
     toolDescription: "Creates structured quiz levels with questions based on the study material.",

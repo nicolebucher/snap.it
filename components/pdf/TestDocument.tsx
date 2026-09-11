@@ -1,6 +1,5 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
-import { formatProfileMeta, type Profile, type WorksheetData } from "@/types/generation";
-import { t, type Locale } from "@/lib/i18n/translations";
+import { formatProfileMeta, type Profile, type Task, type WorksheetData } from "@/types/generation";
 
 const styles = StyleSheet.create({
   page: { padding: 40, fontSize: 11, fontFamily: "Helvetica" },
@@ -16,22 +15,77 @@ const styles = StyleSheet.create({
   points: { color: "#888888", fontSize: 9 },
   option: { marginLeft: 12, marginTop: 2 },
   answerLine: { borderBottom: "1pt solid #cccccc", marginTop: 12, height: 20 },
+  underlineRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 6 },
+  underlineWord: { marginRight: 14, marginBottom: 4, textDecoration: "underline" },
+  matchRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 8 },
+  matchColumn: { width: "47%" },
+  matchLine: { flexDirection: "row", marginBottom: 6 },
+  matchBlank: { width: 22, borderBottom: "1pt solid #999999", marginRight: 6 },
   solutionsTitle: { fontSize: 16, fontWeight: 700, marginBottom: 12 },
   solutionRow: { marginBottom: 8 },
 });
 
-export function TestDocument({
-  data,
-  profile,
-  locale,
-}: {
-  data: WorksheetData;
-  profile: Profile;
-  locale: Locale;
-}) {
-  const labels = t(locale).pdf;
+function TaskBody({ task }: { task: Task }) {
+  if (task.type === "multiple-choice") {
+    return (
+      <>
+        {task.options?.map((option, i) => (
+          <Text key={i} style={styles.option}>
+            {String.fromCharCode(65 + i)}) {option}
+          </Text>
+        ))}
+      </>
+    );
+  }
+
+  if (task.type === "unterstreichen") {
+    return (
+      <View style={styles.underlineRow}>
+        {task.options?.map((option, i) => (
+          <Text key={i} style={styles.underlineWord}>
+            {option}
+            {i < (task.options?.length ?? 0) - 1 ? "  /" : ""}
+          </Text>
+        ))}
+      </View>
+    );
+  }
+
+  if (task.type === "zuordnen" && task.pairs) {
+    const shuffledRight = task.pairs.map((p) => p.right).reduce<string[]>((acc, _, i, arr) => {
+      acc.push(arr[(i + 1) % arr.length]);
+      return acc;
+    }, []);
+    return (
+      <View style={styles.matchRow}>
+        <View style={styles.matchColumn}>
+          {task.pairs.map((pair, i) => (
+            <View key={i} style={styles.matchLine}>
+              <View style={styles.matchBlank} />
+              <Text>
+                {i + 1}. {pair.left}
+              </Text>
+            </View>
+          ))}
+        </View>
+        <View style={styles.matchColumn}>
+          {shuffledRight.map((right, i) => (
+            <Text key={i} style={styles.matchLine}>
+              {String.fromCharCode(65 + i)}. {right}
+            </Text>
+          ))}
+        </View>
+      </View>
+    );
+  }
+
+  return <View style={styles.answerLine} />;
+}
+
+export function TestDocument({ data, profile }: { data: WorksheetData; profile: Profile }) {
+  const labels = data.labels;
   const totalPoints = data.tasks.reduce((sum, task) => sum + task.points, 0);
-  const meta = formatProfileMeta(profile, locale);
+  const meta = formatProfileMeta(profile, labels.grade);
 
   return (
     <Document>
@@ -56,13 +110,7 @@ export function TestDocument({
               </Text>
             </View>
             <Text>{task.question}</Text>
-            {task.type === "multiple-choice" &&
-              task.options?.map((option, i) => (
-                <Text key={i} style={styles.option}>
-                  {String.fromCharCode(65 + i)}) {option}
-                </Text>
-              ))}
-            {task.type !== "multiple-choice" && <View style={styles.answerLine} />}
+            <TaskBody task={task} />
           </View>
         ))}
       </Page>

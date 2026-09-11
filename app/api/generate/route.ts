@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { profileSchema, outputFormats, type OutputFormat } from "@/types/generation";
-import { fileToClaudeBlock } from "@/lib/files/extract-input";
+import { ALLOWED_MIME_TYPES, MAX_FILES, MAX_TOTAL_SIZE, filesToClaudeBlocks } from "@/lib/files/extract-input";
 import { generateWorksheet } from "@/lib/generators/worksheet";
 import { generateTest } from "@/lib/generators/test";
 import { generateGameLevels } from "@/lib/generators/game-levels";
 import { renderWorksheetPdf } from "@/lib/pdf/render-worksheet-pdf";
 import { renderTestPdf } from "@/lib/pdf/render-test-pdf";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { slugify } from "@/lib/slugify";
 import { locales, t, type Locale } from "@/lib/i18n/translations";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
-
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 function isOutputFormat(value: unknown): value is OutputFormat {
   return typeof value === "string" && (outputFormats as readonly string[]).includes(value);
@@ -45,15 +44,22 @@ export async function POST(request: NextRequest) {
   }
 
   const format = formData.get("format");
-  const file = formData.get("file");
+  const files = formData.getAll("file").filter((entry): entry is File => entry instanceof File);
 
   if (!isOutputFormat(format)) {
     return NextResponse.json({ error: messages.invalidFormat }, { status: 400 });
   }
-  if (!(file instanceof File)) {
+  if (files.length === 0) {
     return NextResponse.json({ error: messages.missingFile }, { status: 400 });
   }
-  if (file.size > MAX_FILE_SIZE) {
+  if (files.length > MAX_FILES) {
+    return NextResponse.json({ error: messages.tooManyFiles }, { status: 400 });
+  }
+  if (files.some((file) => !ALLOWED_MIME_TYPES.has(file.type))) {
+    return NextResponse.json({ error: messages.fileTypeInvalid }, { status: 400 });
+  }
+  const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+  if (totalSize > MAX_TOTAL_SIZE) {
     return NextResponse.json({ error: messages.fileTooLarge }, { status: 400 });
   }
 
@@ -69,31 +75,35 @@ export async function POST(request: NextRequest) {
   const profile = profileResult.data;
 
   try {
-    const fileBlock = await fileToClaudeBlock(file);
+    const fileBlocks = await filesToClaudeBlocks(files);
 
     if (format === "worksheet") {
-      const data = await generateWorksheet(profile, fileBlock, locale);
-      const pdf = await renderWorksheetPdf(data, profile, locale);
+      const data = await generateWorksheet(profile, fileBlocks, locale);
+      const pdf = await renderWorksheetPdf(data, profile);
+      const filename = `${slugify(data.title)}.pdf`;
       return new NextResponse(new Uint8Array(pdf), {
         headers: {
           "Content-Type": "application/pdf",
-          "Content-Disposition": 'attachment; filename="worksheet.pdf"',
+          "Content-Disposition": `attachment; filename="${filename}"`,
+          "X-Filename": filename,
         },
       });
     }
 
     if (format === "test") {
-      const data = await generateTest(profile, fileBlock, locale);
-      const pdf = await renderTestPdf(data, profile, locale);
+      const data = await generateTest(profile, fileBlocks, locale);
+      const pdf = await renderTestPdf(data, profile);
+      const filename = `${slugify(data.title)}.pdf`;
       return new NextResponse(new Uint8Array(pdf), {
         headers: {
           "Content-Type": "application/pdf",
-          "Content-Disposition": 'attachment; filename="test.pdf"',
+          "Content-Disposition": `attachment; filename="${filename}"`,
+          "X-Filename": filename,
         },
       });
     }
 
-    const game = await generateGameLevels(profile, fileBlock, locale);
+    const game = await generateGameLevels(profile, fileBlocks, locale);
     return NextResponse.json({ game });
   } catch (error) {
     console.error("Generation failed:", error instanceof Error ? error.message : error);

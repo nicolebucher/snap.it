@@ -4,40 +4,50 @@ import { useState } from "react";
 import type { Level } from "@/types/generation";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { QuestionCard } from "./QuestionCard";
+import { SnapEffect } from "./SnapEffect";
 
 export interface LevelResult {
   stars: number;
   score: number;
 }
 
+const SNAPS_BY_DIFFICULTY: Record<string, number> = { leicht: 10, mittel: 15, schwer: 20 };
+
 export function LevelPlayer({
   level,
   onComplete,
   onExit,
+  onSnap,
 }: {
   level: Level;
   onComplete: (result: LevelResult) => void;
   onExit: () => void;
+  onSnap: (amount: number) => void;
 }) {
   const { t } = useLanguage();
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
+  const [snapBurst, setSnapBurst] = useState<{ key: number; amount: number } | null>(null);
 
   const question = level.questions[index];
   const isLast = index === level.questions.length - 1;
   const answered = selected !== null;
   const isCorrect = answered && selected === question.correctIndex;
+  const snapsForThisQuestion = SNAPS_BY_DIFFICULTY[level.difficulty] ?? 10;
 
   function handleSelect(optionIndex: number) {
     if (answered) return;
     setSelected(optionIndex);
     if (optionIndex === question.correctIndex) {
       setCorrectCount((c) => c + 1);
+      onSnap(snapsForThisQuestion);
+      setSnapBurst({ key: Date.now(), amount: snapsForThisQuestion });
     }
   }
 
   function handleNext() {
+    setSnapBurst(null);
     if (isLast) {
       const ratio = correctCount / level.questions.length;
       const stars = ratio === 1 ? 3 : ratio >= 0.7 ? 2 : ratio >= 0.4 ? 1 : 0;
@@ -49,7 +59,7 @@ export function LevelPlayer({
   }
 
   return (
-    <div className="mx-auto w-full max-w-xl">
+    <div className="relative mx-auto w-full max-w-xl">
       <div className="mb-4 flex items-center justify-between">
         <button type="button" onClick={onExit} className="text-sm text-zinc-500 hover:text-zinc-300">
           ← {t.game.back}
@@ -57,7 +67,10 @@ export function LevelPlayer({
         <span className="text-sm text-zinc-500">{t.game.questionOf(index + 1, level.questions.length)}</span>
       </div>
       <h2 className="mb-4 text-lg font-semibold">{level.title}</h2>
-      <QuestionCard question={question} selected={selected} onSelect={handleSelect} />
+      <div className="relative">
+        <QuestionCard question={question} selected={selected} onSelect={handleSelect} />
+        {snapBurst && <SnapEffect key={snapBurst.key} amount={snapBurst.amount} snapsUnit={t.game.snapsUnit} />}
+      </div>
       {answered && (
         <div
           className={`mt-4 rounded-lg p-4 text-sm ${

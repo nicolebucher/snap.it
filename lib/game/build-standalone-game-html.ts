@@ -4,8 +4,8 @@ import { t, type Locale } from "@/lib/i18n/translations";
 /**
  * Baut ein einzelnes, eigenständiges HTML-Dokument, das das Lernspiel ohne Server oder
  * Build-Tooling offline abspielt (Doppelklick reicht). Reine Vanilla-JS-Neuimplementierung
- * der gleichen Level-/Frage-/Punkte-Logik wie GameShell/LevelPlayer, damit der Schüler das
- * Spiel herunterladen und weitergeben kann.
+ * der gleichen Level-/Frage-/Snaps-Logik wie GameShell/LevelPlayer (unverschlossene Level,
+ * Mixed-Modus, Snaps-Zähler), damit der Schüler das Spiel herunterladen und weitergeben kann.
  */
 export function buildStandaloneGameHtml(game: GameData, locale: Locale): string {
   const labels = t(locale);
@@ -19,6 +19,9 @@ export function buildStandaloneGameHtml(game: GameData, locale: Locale): string 
     next: labels.game.next,
     finishLevel: labels.game.finishLevel,
     done: labels.game.done,
+    snapsUnit: labels.game.snapsUnit,
+    mixedTitle: labels.game.mixedTitle,
+    mixedSubtitle: labels.game.mixedSubtitle,
   }).replace(/</g, "\\u003c");
 
   return `<!DOCTYPE html>
@@ -51,8 +54,16 @@ export function buildStandaloneGameHtml(game: GameData, locale: Locale): string 
     margin: 0 0 20px;
   }
   .brand .dot { color: #ffffff; }
+  .top-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
   h1 { font-size: 24px; margin: 0 0 4px; }
   .subject { color: #9ca3af; font-size: 13px; margin: 0 0 24px; }
+  .snaps-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(45, 212, 191, 0.1); color: #5eead4;
+    border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600;
+    transition: transform 0.2s ease;
+  }
+  .snaps-badge.bump { transform: scale(1.25); }
   .level-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
   .level-card {
     border: 1px solid #27272a;
@@ -64,8 +75,8 @@ export function buildStandaloneGameHtml(game: GameData, locale: Locale): string 
     cursor: pointer;
     font: inherit;
   }
-  .level-card:hover:not(:disabled) { border-color: #2dd4bf; }
-  .level-card:disabled { color: #52525b; cursor: not-allowed; }
+  .level-card:hover { border-color: #2dd4bf; }
+  .level-card.mixed { border-color: rgba(45, 212, 191, 0.6); background: rgba(45, 212, 191, 0.05); }
   .level-card .row { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
   .level-card .difficulty { text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; color: #71717a; margin-top: 4px; }
   .level-card .stars { margin-top: 8px; font-size: 14px; }
@@ -74,6 +85,7 @@ export function buildStandaloneGameHtml(game: GameData, locale: Locale): string 
   .back-link:hover { color: #d4d4d8; }
   .question-index { color: #71717a; font-size: 13px; }
   .card {
+    position: relative;
     border: 1px solid #27272a;
     border-radius: 12px;
     padding: 20px;
@@ -103,6 +115,15 @@ export function buildStandaloneGameHtml(game: GameData, locale: Locale): string 
   .feedback.wrong { background: rgba(251, 146, 60, 0.1); color: #fdba74; }
   .feedback p:first-child { font-weight: 600; margin: 0 0 4px; }
   .feedback p { margin: 0; }
+  .snap-float {
+    position: absolute; top: 8px; right: 12px; color: #2dd4bf; font-weight: 700; font-size: 16px;
+    animation: snap-float 1.1s ease-out forwards;
+  }
+  @keyframes snap-float {
+    0% { opacity: 0; transform: translateY(0); }
+    15% { opacity: 1; transform: translateY(-4px); }
+    100% { opacity: 0; transform: translateY(-36px); }
+  }
   .primary-btn {
     margin-top: 16px;
     background: #2dd4bf;
@@ -126,12 +147,32 @@ export function buildStandaloneGameHtml(game: GameData, locale: Locale): string 
 var GAME = ${safeJson};
 var DIFFICULTY = ${difficultyMap};
 var STR = ${strings};
-var state = { results: {}, activeLevelId: null, questionIndex: 0, correctCount: 0, selected: null };
-var sortedLevels = GAME.levels.slice().sort(function (a, b) { return a.id - b.id; });
+var SNAPS_BY_DIFFICULTY = { leicht: 10, mittel: 15, schwer: 20 };
+var realLevels = GAME.levels.slice().sort(function (a, b) { return a.id - b.id; });
+var mixedLevel = buildMixedLevel(realLevels);
+var tiles = mixedLevel ? [mixedLevel].concat(realLevels) : realLevels;
+var state = { results: {}, activeLevelId: null, questionIndex: 0, correctCount: 0, selected: null, totalSnaps: 0, justSnapped: false };
 
-function isUnlocked(index) {
-  if (index === 0) return true;
-  return state.results[sortedLevels[index - 1].id] !== undefined;
+function shuffle(list) {
+  var copy = list.slice();
+  for (var i = copy.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = copy[i];
+    copy[i] = copy[j];
+    copy[j] = tmp;
+  }
+  return copy;
+}
+
+function buildMixedLevel(levels) {
+  if (levels.length < 2) return null;
+  var perLevel = Math.max(5, Math.ceil(15 / levels.length));
+  var pooled = [];
+  levels.forEach(function (level) {
+    pooled = pooled.concat(shuffle(level.questions).slice(0, perLevel));
+  });
+  if (pooled.length < 10) return null;
+  return { id: -1, title: STR.mixedTitle, difficulty: "mittel", questions: shuffle(pooled).slice(0, 15) };
 }
 
 function starsFor(ratio) {
@@ -160,46 +201,45 @@ function render() {
 }
 
 function renderMap() {
-  var allDone = sortedLevels.every(function (level) { return state.results[level.id] !== undefined; });
-  var totalStars = sortedLevels.reduce(function (sum, level) { return sum + ((state.results[level.id] && state.results[level.id].stars) || 0); }, 0);
-  var maxStars = sortedLevels.length * 3;
+  var allDone = realLevels.every(function (level) { return state.results[level.id] !== undefined; });
+  var totalStars = realLevels.reduce(function (sum, level) { return sum + ((state.results[level.id] && state.results[level.id].stars) || 0); }, 0);
+  var maxStars = realLevels.length * 3;
 
   var banner = allDone
     ? '<div class="result-banner"><p>' + escapeHtml(STR.done) + '</p><p>' + totalStars + " / " + maxStars + " \\u2b50</p></div>"
     : "";
 
-  var cards = sortedLevels
-    .map(function (level, index) {
-      var unlocked = isUnlocked(index);
+  var cards = tiles
+    .map(function (level) {
+      var isMixed = level.id === -1;
       var result = state.results[level.id];
       var starsHtml = result ? '<div class="stars">' + starString(result.stars) + "</div>" : "";
-      var difficultyLabel = DIFFICULTY[level.difficulty] || level.difficulty;
+      var difficultyLabel = isMixed ? STR.mixedSubtitle : (DIFFICULTY[level.difficulty] || level.difficulty);
       return (
-        '<button class="level-card" data-level-id="' +
+        '<button class="level-card' + (isMixed ? " mixed" : "") + '" data-level-id="' +
         level.id +
-        '" ' +
-        (unlocked ? "" : "disabled") +
-        '><div class="row"><span>Level ' +
-        (index + 1) +
-        ": " +
+        '"><div class="row"><span>' +
+        (isMixed ? "\\u{1F500} " : "") +
         escapeHtml(level.title) +
-        "</span>" +
-        (unlocked ? "" : "\\u{1F512}") +
-        '</div><div class="difficulty">' +
-        escapeHtml(difficultyLabel) +
-        "</div>" +
+        '</span></div><div class="difficulty">' +
+        escapeHtml(difficultyLabel) + " \\u00b7 " + level.questions.length + "</div>" +
         starsHtml +
         "</button>"
       );
     })
     .join("");
 
+  var snapsBadge =
+    '<div class="snaps-badge' + (state.justSnapped ? " bump" : "") + '">\\u26A1 ' + state.totalSnaps + " " + escapeHtml(STR.snapsUnit) + "</div>";
+
   return (
-    "<h1>" +
+    '<div class="top-header"><div><h1>' +
     escapeHtml(GAME.gameTitle) +
     '</h1><p class="subject">' +
     escapeHtml(GAME.subject) +
-    "</p>" +
+    "</p></div>" +
+    snapsBadge +
+    "</div>" +
     banner +
     '<div class="level-grid">' +
     cards +
@@ -208,7 +248,7 @@ function renderMap() {
 }
 
 function renderLevel() {
-  var level = sortedLevels.find(function (l) { return l.id === state.activeLevelId; });
+  var level = tiles.find(function (l) { return l.id === state.activeLevelId; });
   var question = level.questions[state.questionIndex];
   var isLast = state.questionIndex === level.questions.length - 1;
   var answered = state.selected !== null;
@@ -236,8 +276,13 @@ function renderLevel() {
     .join("");
 
   var feedback = "";
+  var snapFloat = "";
   if (answered) {
     var isCorrect = state.selected === question.correctIndex;
+    if (isCorrect) {
+      var earned = SNAPS_BY_DIFFICULTY[level.difficulty] || 10;
+      snapFloat = '<div class="snap-float">+' + earned + " " + escapeHtml(STR.snapsUnit) + "</div>";
+    }
     feedback =
       '<div class="feedback ' +
       (isCorrect ? "correct" : "wrong") +
@@ -264,6 +309,7 @@ function renderLevel() {
     escapeHtml(question.prompt) +
     "</p>" +
     options +
+    snapFloat +
     "</div>" +
     feedback
   );
@@ -278,6 +324,7 @@ function attachHandlers() {
       state.questionIndex = 0;
       state.correctCount = 0;
       state.selected = null;
+      state.justSnapped = false;
       render();
     });
   }
@@ -294,11 +341,15 @@ function attachHandlers() {
   for (var j = 0; j < optionButtons.length; j++) {
     optionButtons[j].addEventListener("click", function (e) {
       if (state.selected !== null) return;
-      var level = sortedLevels.find(function (l) { return l.id === state.activeLevelId; });
+      var level = tiles.find(function (l) { return l.id === state.activeLevelId; });
       var question = level.questions[state.questionIndex];
       var optionIndex = Number(e.currentTarget.getAttribute("data-option-index"));
       state.selected = optionIndex;
-      if (optionIndex === question.correctIndex) state.correctCount += 1;
+      if (optionIndex === question.correctIndex) {
+        state.correctCount += 1;
+        state.totalSnaps += SNAPS_BY_DIFFICULTY[level.difficulty] || 10;
+        state.justSnapped = true;
+      }
       render();
     });
   }
@@ -306,11 +357,13 @@ function attachHandlers() {
   var nextBtn = app.querySelector("#next-btn");
   if (nextBtn) {
     nextBtn.addEventListener("click", function () {
-      var level = sortedLevels.find(function (l) { return l.id === state.activeLevelId; });
+      var level = tiles.find(function (l) { return l.id === state.activeLevelId; });
       var isLast = state.questionIndex === level.questions.length - 1;
       if (isLast) {
         var ratio = state.correctCount / level.questions.length;
-        state.results[level.id] = { stars: starsFor(ratio), score: state.correctCount };
+        if (level.id !== -1) {
+          state.results[level.id] = { stars: starsFor(ratio), score: state.correctCount };
+        }
         state.activeLevelId = null;
         state.questionIndex = 0;
         state.correctCount = 0;

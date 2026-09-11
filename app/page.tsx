@@ -13,9 +13,10 @@ export default function Home() {
         <Logo size="lg" />
       </div>
       <h1 className="text-xl font-bold sm:text-2xl">{t.landing.heading}</h1>
-      <p className="mt-4 max-w-xl text-zinc-400">{t.landing.subtitle}</p>
+      <h2 className="mt-6 text-sm font-semibold uppercase tracking-wide text-teal-400">{t.landing.howItWorks}</h2>
+      <p className="mt-2 max-w-xl text-zinc-400">{t.landing.subtitle}</p>
       <Link
-        href="/erstellen"
+        href="/create"
         className="mt-8 rounded-full bg-teal-400 px-8 py-3 font-medium text-black hover:bg-teal-300"
       >
         {t.landing.cta}

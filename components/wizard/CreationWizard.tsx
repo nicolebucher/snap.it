@@ -8,7 +8,9 @@ import { GameShell } from "@/components/game/GameShell";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { ShareButton } from "@/components/ui/ShareButton";
+import { PdfPreview } from "@/components/pdf/PdfPreview";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { MAX_TOTAL_SIZE } from "@/lib/files/extract-input";
 import type { GameData, OutputFormat, Profile } from "@/types/generation";
 
 type Step = "input" | "loading" | "result-file" | "result-game" | "error";
@@ -22,17 +24,18 @@ interface DownloadInfo {
 export function CreationWizard() {
   const { locale, t } = useLanguage();
   const [profile, setProfile] = useState<Partial<Profile>>({});
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [format, setFormat] = useState<OutputFormat | null>(null);
   const [step, setStep] = useState<Step>("input");
   const [errorMessage, setErrorMessage] = useState("");
   const [downloadInfo, setDownloadInfo] = useState<DownloadInfo | null>(null);
   const [game, setGame] = useState<GameData | null>(null);
 
-  const canSubmit = !!file && !!format;
+  const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+  const canSubmit = files.length > 0 && !!format && totalSize <= MAX_TOTAL_SIZE;
 
   async function handleSubmit() {
-    if (!canSubmit || !file || !format) return;
+    if (!canSubmit || !format) return;
     setStep("loading");
     setErrorMessage("");
 
@@ -43,7 +46,7 @@ export function CreationWizard() {
     if (profile.subject) body.set("subject", profile.subject);
     body.set("format", format);
     body.set("locale", locale);
-    body.set("file", file);
+    files.forEach((file) => body.append("file", file));
 
     try {
       const response = await fetch("/api/generate", { method: "POST", body });
@@ -60,14 +63,7 @@ export function CreationWizard() {
       } else {
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
-        const filename =
-          format === "worksheet"
-            ? locale === "de"
-              ? "arbeitsblatt.pdf"
-              : "worksheet.pdf"
-            : locale === "de"
-              ? "testarbeit.pdf"
-              : "test.pdf";
+        const filename = response.headers.get("X-Filename") ?? `${format}.pdf`;
         setDownloadInfo({ url, filename, blob });
         setStep("result-file");
       }
@@ -79,7 +75,7 @@ export function CreationWizard() {
 
   function handleRestart() {
     setStep("input");
-    setFile(null);
+    setFiles([]);
     setFormat(null);
     setGame(null);
     setDownloadInfo(null);
@@ -114,13 +110,9 @@ export function CreationWizard() {
         <p className="mb-4 text-lg font-semibold">{t.wizard.done}</p>
 
         <p className="mb-2 text-left text-xs uppercase tracking-wide text-zinc-500">{t.wizard.preview}</p>
-        <iframe
-          src={downloadInfo.url}
-          title={t.wizard.preview}
-          className="mb-6 h-[70vh] w-full rounded-lg border border-zinc-700 bg-white"
-        />
+        <PdfPreview url={downloadInfo.url} label={downloadLabel} />
 
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <a
             href={downloadInfo.url}
             download={downloadInfo.filename}
@@ -145,7 +137,7 @@ export function CreationWizard() {
   return (
     <div className="mx-auto max-w-xl">
       <ProfileForm profile={profile} onChange={setProfile} />
-      <FileUpload file={file} onChange={setFile} />
+      <FileUpload files={files} onChange={setFiles} />
       <FormatSelector value={format} onChange={setFormat} />
       <button
         type="button"

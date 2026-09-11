@@ -50,7 +50,7 @@ export function ProfileForm({
             <option value="">{t.profile.schoolTypeNone}</option>
             {schoolTypes.map((type) => (
               <option key={type} value={type}>
-                {type}
+                {t.schoolTypeLabels[type] ?? type}
               </option>
             ))}
           </select>
