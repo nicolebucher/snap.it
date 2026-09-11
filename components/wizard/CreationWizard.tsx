@@ -9,16 +9,26 @@ import { LoadingState } from "@/components/ui/LoadingState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { ShareButton } from "@/components/ui/ShareButton";
 import { PdfPreview } from "@/components/pdf/PdfPreview";
+import { InteractiveWorksheet } from "@/components/worksheet/InteractiveWorksheet";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { MAX_TOTAL_SIZE } from "@/lib/files/extract-input";
-import type { GameData, OutputFormat, Profile } from "@/types/generation";
+import type { GameData, OutputFormat, Profile, WorksheetData } from "@/types/generation";
 
 type Step = "input" | "loading" | "result-file" | "result-game" | "error";
+type ResultTab = "preview" | "practice";
 
 interface DownloadInfo {
   url: string;
   filename: string;
   blob: Blob;
+  data: WorksheetData;
+}
+
+function base64ToBlob(base64: string, type: string): Blob {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new Blob([bytes], { type });
 }
 
 export function CreationWizard() {
@@ -27,6 +37,7 @@ export function CreationWizard() {
   const [files, setFiles] = useState<File[]>([]);
   const [format, setFormat] = useState<OutputFormat | null>(null);
   const [step, setStep] = useState<Step>("input");
+  const [resultTab, setResultTab] = useState<ResultTab>("preview");
   const [errorMessage, setErrorMessage] = useState("");
   const [downloadInfo, setDownloadInfo] = useState<DownloadInfo | null>(null);
   const [game, setGame] = useState<GameData | null>(null);
@@ -50,21 +61,20 @@ export function CreationWizard() {
 
     try {
       const response = await fetch("/api/generate", { method: "POST", body });
+      const json = await response.json().catch(() => null);
 
       if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(data?.error ?? "Something went wrong.");
+        throw new Error(json?.error ?? "Something went wrong.");
       }
 
       if (format === "game") {
-        const data = await response.json();
-        setGame(data.game);
+        setGame(json.game);
         setStep("result-game");
       } else {
-        const blob = await response.blob();
+        const blob = base64ToBlob(json.pdfBase64, "application/pdf");
         const url = URL.createObjectURL(blob);
-        const filename = response.headers.get("X-Filename") ?? `${format}.pdf`;
-        setDownloadInfo({ url, filename, blob });
+        setDownloadInfo({ url, filename: json.filename, blob, data: json.data });
+        setResultTab("preview");
         setStep("result-file");
       }
     } catch (error) {
@@ -122,8 +132,32 @@ export function CreationWizard() {
           />
         </div>
 
-        <p className="mb-2 text-left text-xs uppercase tracking-wide text-zinc-500">{t.wizard.preview}</p>
-        <PdfPreview url={downloadInfo.url} label={downloadLabel} />
+        <div className="mb-4 flex justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setResultTab("preview")}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+              resultTab === "preview" ? "bg-teal-400 text-black" : "border border-zinc-700 text-zinc-400"
+            }`}
+          >
+            {t.wizard.previewTab}
+          </button>
+          <button
+            type="button"
+            onClick={() => setResultTab("practice")}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+              resultTab === "practice" ? "bg-teal-400 text-black" : "border border-zinc-700 text-zinc-400"
+            }`}
+          >
+            {t.wizard.practiceTab}
+          </button>
+        </div>
+
+        {resultTab === "preview" ? (
+          <PdfPreview url={downloadInfo.url} label={downloadLabel} />
+        ) : (
+          <InteractiveWorksheet data={downloadInfo.data} />
+        )}
 
         <div className="mt-6">
           <button type="button" onClick={handleRestart} className="text-sm text-teal-400 hover:underline">

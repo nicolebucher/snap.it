@@ -81,26 +81,14 @@ export async function POST(request: NextRequest) {
       const data = await generateWorksheet(profile, fileBlocks, locale);
       const pdf = await renderWorksheetPdf(data, profile);
       const filename = `${slugify(data.title)}.pdf`;
-      return new NextResponse(new Uint8Array(pdf), {
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": `attachment; filename="${filename}"`,
-          "X-Filename": filename,
-        },
-      });
+      return NextResponse.json({ data, filename, pdfBase64: Buffer.from(pdf).toString("base64") });
     }
 
     if (format === "test") {
       const data = await generateTest(profile, fileBlocks, locale);
       const pdf = await renderTestPdf(data, profile);
       const filename = `${slugify(data.title)}.pdf`;
-      return new NextResponse(new Uint8Array(pdf), {
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": `attachment; filename="${filename}"`,
-          "X-Filename": filename,
-        },
-      });
+      return NextResponse.json({ data, filename, pdfBase64: Buffer.from(pdf).toString("base64") });
     }
 
     const game = await generateGameLevels(profile, fileBlocks, locale);

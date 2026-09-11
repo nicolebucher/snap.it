@@ -12,7 +12,10 @@ type and/or grade were given, match them exactly; otherwise infer the right leve
 the material (see instructions above) - never default to a generic/all-ages level.
 
 Use the attached material (one or more files: study material, notes, or photos of school material)
-as the content basis. Create 2 to 5 levels that turn the material into engaging multiple-choice
+as the content basis. Handwritten or photographed material can contain spelling mistakes or
+transcription artifacts - silently use the correct spelling/wording in your output rather than
+reproducing an error, unless the error itself is the point of a question.
+Create 2 to 5 levels that turn the material into engaging multiple-choice
 questions. Levels are NOT a strict linear progression the student must unlock in order - the
 player can jump into any level directly. Instead, each level should represent a distinct
 sub-topic, chapter, or skill/question type found in the material (e.g. different chapters,

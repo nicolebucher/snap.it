@@ -50,9 +50,18 @@ const en = {
     downloadWorksheet: "Download worksheet",
     downloadTest: "Download test",
     preview: "Preview",
+    previewTab: "PDF preview",
+    practiceTab: "Practice online",
   },
   share: {
     button: "Share",
+  },
+  practice: {
+    checkAnswers: "Check answers",
+    hideAnswers: "Hide answers",
+    yourAnswerPlaceholder: "Your answer…",
+    chooseOption: "Choose…",
+    correctAnswerLabel: "Correct answer:",
   },
   footer: {
     imprint: "Imprint",
@@ -157,9 +166,18 @@ const de: typeof en = {
     downloadWorksheet: "Arbeitsblatt herunterladen",
     downloadTest: "Testarbeit herunterladen",
     preview: "Vorschau",
+    previewTab: "PDF-Vorschau",
+    practiceTab: "Online üben",
   },
   share: {
     button: "Teilen",
+  },
+  practice: {
+    checkAnswers: "Antworten prüfen",
+    hideAnswers: "Antworten verbergen",
+    yourAnswerPlaceholder: "Deine Antwort…",
+    chooseOption: "Auswählen…",
+    correctAnswerLabel: "Richtige Antwort:",
   },
   footer: {
     imprint: "Impressum",

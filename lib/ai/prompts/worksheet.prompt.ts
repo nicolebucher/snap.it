@@ -12,7 +12,9 @@ type and/or grade were given, match them exactly; otherwise infer the right leve
 the material (see instructions above) - never default to a generic/all-ages level.
 
 Use the attached material (one or more files: study material, notes, or photos of school material)
-as the content basis.
+as the content basis. Handwritten or photographed material can contain spelling mistakes or
+transcription artifacts - silently use the correct spelling/wording in your output rather than
+reproducing an error, unless the error itself is the point of an exercise.
 Create a thorough worksheet for independent practice that spans several A4 pages
 (at least 16, ideally up to 24 tasks), with:
 - a genuinely varied mix of task types across the sheet, using ALL of these where the material allows:
@@ -25,6 +27,13 @@ Create a thorough worksheet for independent practice that spans several A4 pages
     the student draws lines or writes the matching letter - do not repeat the same left/right item
 - age-appropriate, clear language
 - gradually increasing difficulty across the whole sheet (easy -> medium -> challenging)
+- for procedural/skill-based subjects (e.g. math, grammar) where the material demonstrates a
+  method or rule: invent NEW example problems that apply the same method/rule at a similar
+  difficulty - do not just copy the exact numbers/sentences from the material verbatim, so the
+  worksheet is genuinely useful for practice instead of testing rote memorization of one example.
+  For purely factual/knowledge-based content (e.g. vocabulary, historical facts, definitions), it
+  is fine and expected to directly reuse the specific terms/facts from the material, since the
+  content itself is what is being learned.
 - a short, correct sample answer for every task ("answer") - for "zuordnen" describe the correct
   matches (e.g. "1-B, 2-A, 3-C"); for "unterstreichen" give the correct word/phrase
 - a short, motivating introduction (2-3 sentences)

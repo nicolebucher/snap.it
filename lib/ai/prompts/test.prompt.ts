@@ -12,7 +12,9 @@ type and/or grade were given, match them exactly; otherwise infer the right leve
 the material (see instructions above) - never default to a generic/all-ages level.
 
 Use the attached material (one or more files: study material, notes, or photos of school material)
-as the content basis.
+as the content basis. Handwritten or photographed material can contain spelling mistakes or
+transcription artifacts - silently use the correct spelling/wording in your output rather than
+reproducing an error, unless the error itself is the point of an exercise.
 Create a realistic test with:
 - clearly worded questions in exam style (no hints or tips within the question itself)
 - a genuinely varied mix of task types, using several of these where the material allows:
@@ -23,6 +25,12 @@ Create a realistic test with:
     the student underlines the correct one (do NOT format this as a multiple-choice list)
   - "zuordnen": a matching task with 3-6 "pairs" (left term / right definition or counterpart);
     the student draws lines or writes the matching letter - do not repeat the same left/right item
+- for procedural/skill-based subjects (e.g. math, grammar) where the material demonstrates a
+  method or rule: invent NEW example problems that apply the same method/rule at a similar
+  difficulty - do not just copy the exact numbers/sentences from the material verbatim, so the
+  test is a genuine check of the skill instead of rote memorization of one example. For purely
+  factual/knowledge-based content (e.g. vocabulary, historical facts, definitions), it is fine
+  and expected to directly reuse the specific terms/facts from the material.
 - 6 to 10 tasks with a sensible points distribution (about 20-30 points total)
 - the exact, correct solution for every task ("answer") - for "zuordnen" describe the correct
   matches (e.g. "1-B, 2-A, 3-C"); for "unterstreichen" give the correct word/phrase (this will be
