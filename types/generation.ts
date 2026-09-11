@@ -168,6 +168,10 @@ export const spellingItemSchema = z.object({
   number: z.number(),
   sentence: z.string(),
   correctSpelling: z.string(),
+  // Macht das gemeinte Wort unmissverständlich (Synonym/Definition/Übersetzung), ohne es
+  // vorzuschreiben - die Aufgabe testet die Schreibweise eines bekannten Worts, nicht das
+  // Erraten, welches Wort überhaupt gemeint ist.
+  hint: z.string(),
 });
 export type SpellingItem = z.infer<typeof spellingItemSchema>;
 

@@ -18,7 +18,13 @@ export function GameShell({ game }: { game: GameData }) {
   const [totalSnaps, setTotalSnaps] = useState(0);
   const [snapBump, setSnapBump] = useState(0);
 
-  const sortedLevels = [...game.levels].sort((a, b) => a.id - b.id);
+  // Memoized on game.levels specifically (not recomputed on every render): earning a Snap
+  // updates totalSnaps/snapBump state right here in GameShell, which re-renders this component
+  // while a level is being played. Without this memo, sortedLevels was a fresh array every
+  // render, which made the mixedLevel useMemo below recompute (and buildMixedLevel re-shuffle)
+  // on every Snap - silently swapping the Mixed level's questions out from under the player
+  // mid-round, which could desync the answered/Next-button state entirely.
+  const sortedLevels = useMemo(() => [...game.levels].sort((a, b) => a.id - b.id), [game.levels]);
   const mixedLevel = useMemo(
     () => buildMixedLevel(sortedLevels, t.game.mixedTitle),
     [sortedLevels, t.game.mixedTitle]
@@ -52,6 +58,7 @@ export function GameShell({ game }: { game: GameData }) {
     return (
       <LevelPlayer
         level={activeLevel}
+        totalSnaps={totalSnaps}
         onExit={() => setActiveLevelId(null)}
         onSnap={handleSnap}
         onComplete={(result) => {

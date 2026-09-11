@@ -66,6 +66,9 @@ export function SpellingDiagnosticPlayer({
         <h2 className="text-lg font-semibold">{diagnostic.title}</h2>
         <span className="text-sm text-zinc-500">{t.game.questionOf(index + 1, diagnostic.items.length)}</span>
       </div>
+      <p className="mb-2 text-sm text-teal-300">
+        <span className="font-semibold">{t.spelling.hintLabel}</span> {item.hint}
+      </p>
       <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
         <p className="flex flex-wrap items-center gap-2 text-base leading-relaxed">
           <span>{before}</span>

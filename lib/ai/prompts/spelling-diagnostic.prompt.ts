@@ -31,9 +31,15 @@ match them exactly${
 ${wordSourceInstructions}
 
 For each word, write one natural sentence that uses it in context, with the word itself replaced
-by a single blank "___". The student will type the missing word from memory, so:
-- the sentence must make the intended word obvious from context and grammar (so there is exactly
-  one sensible correct answer), without spelling it out anywhere else in the sentence
+by a single blank "___". This tests whether the student can correctly SPELL a word they already
+know - not whether they can guess which word is meant - so every item needs an explicit "hint"
+on top of the sentence:
+- "hint" must, by itself, make the intended word unambiguous: a short synonym, a brief
+  definition/description, or (if this is foreign-vocabulary practice) the word's translation into
+  the student's other language - never the word itself, a near-spelling of it, or its first
+  letter(s)
+- the sentence should still use the word naturally in context, but the student must be able to
+  identify the exact word from "hint" alone, without needing to guess from the sentence
 - "correctSpelling" must be exactly the word/phrase that belongs in the blank, correctly spelled,
   matching the capitalization it would have in that sentence
 - vary the sentences so the same word or context isn't repeated

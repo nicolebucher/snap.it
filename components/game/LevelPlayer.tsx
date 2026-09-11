@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Level } from "@/types/generation";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { SnapIcon } from "@/components/icons/ActionIcons";
 import { QuestionCard } from "./QuestionCard";
 import { FillBlankCard } from "./FillBlankCard";
 import { SnapEffect } from "./SnapEffect";
@@ -16,11 +17,13 @@ const SNAPS_BY_DIFFICULTY: Record<string, number> = { leicht: 10, mittel: 15, sc
 
 export function LevelPlayer({
   level,
+  totalSnaps,
   onComplete,
   onExit,
   onSnap,
 }: {
   level: Level;
+  totalSnaps: number;
   onComplete: (result: LevelResult) => void;
   onExit: () => void;
   onSnap: (amount: number) => void;
@@ -100,11 +103,15 @@ export function LevelPlayer({
 
   return (
     <div className="relative mx-auto w-full max-w-xl">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <button type="button" onClick={onExit} className="text-sm text-zinc-500 hover:text-zinc-300">
           ← {t.game.back}
         </button>
         <span className="text-sm text-zinc-500">{t.game.questionOf(index + 1, level.questions.length)}</span>
+        <div className="flex shrink-0 items-center gap-1.5 rounded-full bg-teal-400/10 px-3 py-1.5 text-xs font-semibold text-teal-300">
+          <SnapIcon className="h-3.5 w-3.5" />
+          {totalSnaps} {t.game.snapsUnit}
+        </div>
       </div>
       <h2 className="mb-4 text-lg font-semibold">{level.title}</h2>
       <div className="relative">
