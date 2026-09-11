@@ -2,7 +2,6 @@ import { worksheetSchema, type Profile, type WorksheetData } from "@/types/gener
 import { generateStructuredOutput } from "@/lib/ai/structured-output";
 import { buildWorksheetSystemPrompt } from "@/lib/ai/prompts/worksheet.prompt";
 import { isMockMode } from "@/lib/env";
-import { shuffleTaskOptions } from "@/lib/shuffle-options";
 import type { ClaudeFileBlock } from "@/lib/files/extract-input";
 import type { Locale } from "@/lib/i18n/translations";
 import mockWorksheetEn from "./mock/mock-worksheet.en.json";
@@ -15,14 +14,15 @@ export async function generateWorksheet(
   fileBlocks: ClaudeFileBlock[],
   locale: Locale
 ): Promise<WorksheetData> {
-  const data = isMockMode()
-    ? worksheetSchema.parse(MOCKS[locale])
-    : await generateStructuredOutput({
-        system: buildWorksheetSystemPrompt(profile, locale),
-        userContent: [...fileBlocks, { type: "text", text: "Create a matching worksheet from this material." }],
-        schema: worksheetSchema,
-        toolName: "create_worksheet",
-        toolDescription: "Creates a structured practice worksheet based on the study material.",
-      });
-  return { ...data, tasks: shuffleTaskOptions(data.tasks) };
+  if (isMockMode()) {
+    return worksheetSchema.parse(MOCKS[locale]);
+  }
+
+  return generateStructuredOutput({
+    system: buildWorksheetSystemPrompt(profile, locale),
+    userContent: [...fileBlocks, { type: "text", text: "Create a matching worksheet from this material." }],
+    schema: worksheetSchema,
+    toolName: "create_worksheet",
+    toolDescription: "Creates a structured practice worksheet based on the study material.",
+  });
 }

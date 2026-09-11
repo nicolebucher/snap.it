@@ -11,19 +11,13 @@ export function QuestionCard({
   selected: number | null;
   onSelect: (index: number) => void;
 }) {
-  // QuestionCard is only ever rendered for "multiple-choice" questions (LevelPlayer branches on
-  // question.type), where "options"/"correctIndex" are guaranteed by the schema's own refine -
-  // the optional typing here only reflects the other question type ("lueckentext").
-  const options = question.options ?? [];
-  const correctIndex = question.correctIndex ?? -1;
-
   return (
     <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
       <p className="mb-4 font-medium">{question.prompt}</p>
       <div className="flex flex-col gap-2">
-        {options.map((option, i) => {
+        {question.options.map((option, i) => {
           const isSelected = selected === i;
-          const isCorrect = i === correctIndex;
+          const isCorrect = i === question.correctIndex;
           let stateClass = "border-zinc-700 hover:border-teal-400";
           if (selected !== null) {
             if (isCorrect) stateClass = "border-green-400 bg-green-400/10";

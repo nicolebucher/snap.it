@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { track } from "@vercel/analytics/server";
-import { profileSchema, outputFormats, spellingItemSchema, type OutputFormat } from "@/types/generation";
+import { profileSchema, outputFormats, type OutputFormat } from "@/types/generation";
 import { ALLOWED_MIME_TYPES, MAX_FILES, MAX_TOTAL_SIZE, filesToClaudeBlocks } from "@/lib/files/extract-input";
 import { generateWorksheet } from "@/lib/generators/worksheet";
 import { generateTest } from "@/lib/generators/test";
 import { generateGameLevels } from "@/lib/generators/game-levels";
 import { generatePodcastScript } from "@/lib/generators/podcast";
-import { generateSpellingDiagnostic } from "@/lib/generators/spelling-diagnostic";
-import { generateSpellingFollowup } from "@/lib/generators/spelling-followup";
 import { synthesizeSpeech } from "@/lib/ai/tts/elevenlabs";
 import { renderWorksheetPdf } from "@/lib/pdf/render-worksheet-pdf";
 import { renderTestPdf } from "@/lib/pdf/render-test-pdf";
@@ -106,41 +103,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ game });
     }
 
-    if (format === "podcast") {
-      const podcast = await generatePodcastScript(profile, fileBlocks, locale);
-      const audio = await synthesizeSpeech(podcast.script);
-      const filename = `${slugify(podcast.title)}.mp3`;
-      await track("Material generated", { format });
-      return NextResponse.json({
-        title: podcast.title,
-        script: podcast.script,
-        filename,
-        audioBase64: Buffer.from(audio).toString("base64"),
-      });
-    }
-
-    // "spelling" has two phases. Nothing is persisted between them, so the client resends the
-    // same files plus - for the follow-up - the diagnostic items the student got wrong.
-    if (formData.get("phase") === "followup") {
-      let missedItems;
-      try {
-        missedItems = z.array(spellingItemSchema).parse(JSON.parse(String(formData.get("missed") ?? "[]")));
-      } catch {
-        return NextResponse.json({ error: messages.invalidRequest }, { status: 400 });
-      }
-      if (missedItems.length === 0) {
-        return NextResponse.json({ error: messages.invalidRequest }, { status: 400 });
-      }
-      const data = await generateSpellingFollowup(profile, fileBlocks, locale, missedItems);
-      const pdf = await renderWorksheetPdf(data, profile);
-      const filename = `${slugify(data.title)}.pdf`;
-      await track("Material generated", { format: "spelling-followup" });
-      return NextResponse.json({ data, filename, pdfBase64: Buffer.from(pdf).toString("base64") });
-    }
-
-    const diagnostic = await generateSpellingDiagnostic(profile, fileBlocks, locale);
-    await track("Material generated", { format: "spelling-diagnostic" });
-    return NextResponse.json({ diagnostic });
+    const podcast = await generatePodcastScript(profile, fileBlocks, locale);
+    const audio = await synthesizeSpeech(podcast.script);
+    const filename = `${slugify(podcast.title)}.mp3`;
+    await track("Material generated", { format });
+    return NextResponse.json({
+      title: podcast.title,
+      script: podcast.script,
+      filename,
+      audioBase64: Buffer.from(audio).toString("base64"),
+    });
   } catch (error) {
     console.error("Generation failed:", error instanceof Error ? error.message : error);
     return NextResponse.json({ error: messages.generationFailed }, { status: 500 });

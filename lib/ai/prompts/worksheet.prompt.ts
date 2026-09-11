@@ -19,14 +19,10 @@ Create a thorough worksheet for independent practice that spans several A4 pages
 (at least 16, ideally up to 24 tasks), with:
 - a genuinely varied mix of task types across the sheet, using ALL of these where the material allows:
   - "offen": open-ended question, student writes a free-text answer
-  - "multiple-choice": question with "options" (3-5 choices), exactly one correct - the wrong
-    options must be plausible and genuinely tempting (realistic mistakes or near-misses a student
-    at this level might actually make), never so obviously wrong that the question can be solved
-    without knowing the material
+  - "multiple-choice": question with "options" (3-5 choices), exactly one correct
   - "lueckentext": fill-in-the-blank sentence with a "___" gap
   - "unterstreichen": a sentence containing a small set of candidate words/phrases in "options",
-    the student underlines the correct one (do NOT format this as a multiple-choice list) - same
-    plausible-distractor rule applies
+    the student underlines the correct one (do NOT format this as a multiple-choice list)
   - "zuordnen": a matching task with 3-6 "pairs" (left term / right definition or counterpart);
     the student draws lines or writes the matching letter - do not repeat the same left/right item
 - age-appropriate, clear language

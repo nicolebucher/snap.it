@@ -7,16 +7,16 @@
       "title": "Brüche verstehen",
       "difficulty": "leicht",
       "questions": [
-        { "type": "multiple-choice", "prompt": "Was zeigt der Nenner eines Bruchs an?", "options": ["Die Anzahl der Teile insgesamt", "Die Anzahl der genommenen Teile", "Das Ergebnis der Division", "Den größten gemeinsamen Teiler"], "correctIndex": 0, "explanation": "Der Nenner zeigt, in wie viele Teile das Ganze geteilt wird." },
-        { "type": "lueckentext", "prompt": "Die Zahl über dem Bruchstrich, die zeigt, wie viele Teile gemeint sind, heißt der ___.", "correctAnswer": "Zähler", "explanation": "Der Zähler steht über dem Bruchstrich und zeigt, wie viele Teile gemeint sind." },
-        { "type": "multiple-choice", "prompt": "Welcher Bruch stellt 'drei von vier Teilen' dar?", "options": ["4/3", "3/4", "1/4", "3/3"], "correctIndex": 1, "explanation": "3/4 bedeutet 3 von 4 gleich großen Teilen." },
-        { "type": "multiple-choice", "prompt": "1/2 ist wertgleich mit...", "options": ["2/4", "1/4", "3/4", "2/2"], "correctIndex": 0, "explanation": "2/4 lässt sich zu 1/2 kürzen, beide sind also gleich groß." },
-        { "type": "lueckentext", "prompt": "Ein Bruch, der genau die Hälfte eines Ganzen beschreibt, schreibt man als 1/___.", "correctAnswer": "2", "explanation": "1/2 bedeutet genau die Hälfte." },
-        { "type": "multiple-choice", "prompt": "Ein Bruch mit Zähler = Nenner (z.B. 4/4) ist wertgleich mit...", "options": ["0", "1", "2", "1/2"], "correctIndex": 1, "explanation": "Wenn Zähler und Nenner gleich sind, ergibt der Bruch immer 1 Ganzes." },
-        { "type": "multiple-choice", "prompt": "Welcher Bruch ist größer als 1?", "options": ["3/4", "5/5", "7/6", "2/3"], "correctIndex": 2, "explanation": "Bei 7/6 ist der Zähler größer als der Nenner, der Bruch ist also größer als 1." },
-        { "type": "lueckentext", "prompt": "Man liest den Bruch 2/5 als 'zwei ___'.", "correctAnswer": "Fünftel", "explanation": "Man liest zuerst den Zähler, dann den Nenner mit der Endung '-tel'." },
-        { "type": "multiple-choice", "prompt": "Welcher Bruch ist am kleinsten?", "options": ["1/2", "1/8", "1/4", "1/3"], "correctIndex": 1, "explanation": "Je größer der Nenner bei gleichem Zähler, desto kleiner der Bruch: 1/8 ist am kleinsten." },
-        { "type": "multiple-choice", "prompt": "Was ist der Nenner von 7/9?", "options": ["7", "9", "16", "2"], "correctIndex": 1, "explanation": "Der Nenner steht unter dem Bruchstrich, hier also die 9." }
+        { "prompt": "Was zeigt der Nenner eines Bruchs an?", "options": ["Die Anzahl der Teile insgesamt", "Die Anzahl der genommenen Teile", "Das Ergebnis der Division", "Den größten gemeinsamen Teiler"], "correctIndex": 0, "explanation": "Der Nenner zeigt, in wie viele Teile das Ganze geteilt wird." },
+        { "prompt": "Was zeigt der Zähler eines Bruchs an?", "options": ["Die Anzahl der genommenen Teile", "Die Anzahl der Teile insgesamt", "Den Kehrwert", "Das Vorzeichen"], "correctIndex": 0, "explanation": "Der Zähler steht über dem Bruchstrich und zeigt, wie viele Teile gemeint sind." },
+        { "prompt": "Welcher Bruch stellt 'drei von vier Teilen' dar?", "options": ["4/3", "3/4", "1/4", "3/3"], "correctIndex": 1, "explanation": "3/4 bedeutet 3 von 4 gleich großen Teilen." },
+        { "prompt": "1/2 ist wertgleich mit...", "options": ["2/4", "1/4", "3/4", "2/2"], "correctIndex": 0, "explanation": "2/4 lässt sich zu 1/2 kürzen, beide sind also gleich groß." },
+        { "prompt": "Welcher Bruch beschreibt ein halbes Ganzes?", "options": ["1/3", "1/2", "2/3", "1/4"], "correctIndex": 1, "explanation": "1/2 bedeutet genau die Hälfte." },
+        { "prompt": "Ein Bruch mit Zähler = Nenner (z.B. 4/4) ist wertgleich mit...", "options": ["0", "1", "2", "1/2"], "correctIndex": 1, "explanation": "Wenn Zähler und Nenner gleich sind, ergibt der Bruch immer 1 Ganzes." },
+        { "prompt": "Welcher Bruch ist größer als 1?", "options": ["3/4", "5/5", "7/6", "2/3"], "correctIndex": 2, "explanation": "Bei 7/6 ist der Zähler größer als der Nenner, der Bruch ist also größer als 1." },
+        { "prompt": "Wie liest man den Bruch 2/5?", "options": ["Zwei Fünftel", "Fünf Zweitel", "Zwei Fünfer", "Fünftel Zwei"], "correctIndex": 0, "explanation": "Man liest zuerst den Zähler, dann den Nenner mit der Endung '-tel'." },
+        { "prompt": "Welcher Bruch ist am kleinsten?", "options": ["1/2", "1/8", "1/4", "1/3"], "correctIndex": 1, "explanation": "Je größer der Nenner bei gleichem Zähler, desto kleiner der Bruch: 1/8 ist am kleinsten." },
+        { "prompt": "Was ist der Nenner von 7/9?", "options": ["7", "9", "16", "2"], "correctIndex": 1, "explanation": "Der Nenner steht unter dem Bruchstrich, hier also die 9." }
       ]
     },
     {
@@ -24,16 +24,16 @@
       "title": "Kürzen und Erweitern",
       "difficulty": "mittel",
       "questions": [
-        { "type": "multiple-choice", "prompt": "Kürze 6/8 vollständig.", "options": ["3/4", "2/3", "4/6", "1/2"], "correctIndex": 0, "explanation": "6/8 durch 2 gekürzt ergibt 3/4." },
-        { "type": "multiple-choice", "prompt": "Kürze 10/15 vollständig.", "options": ["2/3", "1/2", "5/10", "3/5"], "correctIndex": 0, "explanation": "10/15 durch 5 gekürzt ergibt 2/3." },
-        { "type": "lueckentext", "prompt": "Erweitert man 2/3 auf den Nenner 9, erhält man 6/___.", "correctAnswer": "9", "explanation": "2/3 mal 3/3 ergibt 6/9." },
-        { "type": "multiple-choice", "prompt": "Erweitere 1/4 auf den Nenner 12.", "options": ["3/12", "4/12", "1/12", "12/12"], "correctIndex": 0, "explanation": "1/4 mal 3/3 ergibt 3/12." },
-        { "type": "multiple-choice", "prompt": "Welcher Bruch ist NICHT vollständig gekürzt?", "options": ["1/2", "4/8", "3/5", "2/3"], "correctIndex": 1, "explanation": "4/8 lässt sich noch zu 1/2 kürzen." },
-        { "type": "multiple-choice", "prompt": "Kürze 12/16 vollständig.", "options": ["3/4", "4/5", "6/8", "2/3"], "correctIndex": 0, "explanation": "12/16 durch 4 gekürzt ergibt 3/4." },
-        { "type": "lueckentext", "prompt": "Ein Bruch, der nicht weiter gekürzt werden kann, ist vollständig ___.", "correctAnswer": "gekürzt", "explanation": "Wenn Zähler und Nenner keinen gemeinsamen Teiler mehr haben, ist der Bruch vollständig gekürzt." },
-        { "type": "multiple-choice", "prompt": "Welche zwei Brüche sind wertgleich?", "options": ["2/3 und 4/6", "2/3 und 3/4", "2/3 und 1/3", "2/3 und 4/9"], "correctIndex": 0, "explanation": "4/6 lässt sich zu 2/3 kürzen, beide sind also gleich groß." },
-        { "type": "multiple-choice", "prompt": "Kürze 9/12 so weit wie möglich.", "options": ["3/4", "4/5", "2/3", "1/2"], "correctIndex": 0, "explanation": "9/12 durch 3 gekürzt ergibt 3/4." },
-        { "type": "multiple-choice", "prompt": "Erweitere 5/6 auf den Nenner 18.", "options": ["15/18", "10/18", "5/18", "18/18"], "correctIndex": 0, "explanation": "5/6 mal 3/3 ergibt 15/18." }
+        { "prompt": "Kürze 6/8 vollständig.", "options": ["3/4", "2/3", "4/6", "1/2"], "correctIndex": 0, "explanation": "6/8 durch 2 gekürzt ergibt 3/4." },
+        { "prompt": "Kürze 10/15 vollständig.", "options": ["2/3", "1/2", "5/10", "3/5"], "correctIndex": 0, "explanation": "10/15 durch 5 gekürzt ergibt 2/3." },
+        { "prompt": "Erweitere 2/3 auf den Nenner 9.", "options": ["6/9", "4/9", "2/9", "8/9"], "correctIndex": 0, "explanation": "2/3 mal 3/3 ergibt 6/9." },
+        { "prompt": "Erweitere 1/4 auf den Nenner 12.", "options": ["3/12", "4/12", "1/12", "12/12"], "correctIndex": 0, "explanation": "1/4 mal 3/3 ergibt 3/12." },
+        { "prompt": "Welcher Bruch ist NICHT vollständig gekürzt?", "options": ["1/2", "4/8", "3/5", "2/3"], "correctIndex": 1, "explanation": "4/8 lässt sich noch zu 1/2 kürzen." },
+        { "prompt": "Kürze 12/16 vollständig.", "options": ["3/4", "4/5", "6/8", "2/3"], "correctIndex": 0, "explanation": "12/16 durch 4 gekürzt ergibt 3/4." },
+        { "prompt": "Welcher Bruch entsteht, wenn man 3/5 mit 4 erweitert?", "options": ["12/20", "7/9", "3/20", "12/5"], "correctIndex": 0, "explanation": "Zähler und Nenner werden beide mit 4 multipliziert: 12/20." },
+        { "prompt": "Welche zwei Brüche sind wertgleich?", "options": ["2/3 und 4/6", "2/3 und 3/4", "2/3 und 1/3", "2/3 und 4/9"], "correctIndex": 0, "explanation": "4/6 lässt sich zu 2/3 kürzen, beide sind also gleich groß." },
+        { "prompt": "Kürze 9/12 so weit wie möglich.", "options": ["3/4", "4/5", "2/3", "1/2"], "correctIndex": 0, "explanation": "9/12 durch 3 gekürzt ergibt 3/4." },
+        { "prompt": "Erweitere 5/6 auf den Nenner 18.", "options": ["15/18", "10/18", "5/18", "18/18"], "correctIndex": 0, "explanation": "5/6 mal 3/3 ergibt 15/18." }
       ]
     },
     {
@@ -41,16 +41,16 @@
       "title": "Brüche addieren und subtrahieren",
       "difficulty": "schwer",
       "questions": [
-        { "type": "multiple-choice", "prompt": "Berechne 1/4 + 1/2.", "options": ["2/6", "3/4", "1/6", "2/4"], "correctIndex": 1, "explanation": "1/2 entspricht 2/4, also ergibt 1/4 + 2/4 = 3/4." },
-        { "type": "multiple-choice", "prompt": "Berechne 2/3 + 1/6.", "options": ["3/9", "5/6", "1/2", "3/6"], "correctIndex": 1, "explanation": "2/3 entspricht 4/6, also 4/6 + 1/6 = 5/6." },
-        { "type": "lueckentext", "prompt": "Bevor man Brüche mit unterschiedlichen Nennern addiert, braucht man zuerst einen gemeinsamen ___.", "correctAnswer": "Nenner", "explanation": "Ein gemeinsamer Nenner erlaubt es, die Zähler direkt zu addieren." },
-        { "type": "multiple-choice", "prompt": "Berechne 3/4 - 1/4.", "options": ["1/2", "2/4", "1/4", "1"], "correctIndex": 0, "explanation": "3/4 - 1/4 = 2/4, gekürzt ergibt das 1/2." },
-        { "type": "multiple-choice", "prompt": "Berechne 5/6 - 1/3.", "options": ["1/2", "4/6", "2/3", "1/6"], "correctIndex": 0, "explanation": "1/3 entspricht 2/6, also 5/6 - 2/6 = 3/6 = 1/2." },
-        { "type": "multiple-choice", "prompt": "Berechne 1/2 + 1/3.", "options": ["5/6", "2/5", "1/6", "2/6"], "correctIndex": 0, "explanation": "Mit Hauptnenner 6: 3/6 + 2/6 = 5/6." },
-        { "type": "lueckentext", "prompt": "7/8 minus 1/2 ergibt ___/8.", "correctAnswer": "3", "explanation": "1/2 entspricht 4/8, also 7/8 - 4/8 = 3/8." },
-        { "type": "multiple-choice", "prompt": "Berechne 1/5 + 2/5 + 1/5.", "options": ["4/5", "3/5", "4/15", "1"], "correctIndex": 0, "explanation": "Bei gleichem Nenner werden nur die Zähler addiert: 1+2+1=4, also 4/5." },
-        { "type": "multiple-choice", "prompt": "Berechne 2/3 - 1/6.", "options": ["1/2", "3/6", "1/6", "5/6"], "correctIndex": 0, "explanation": "2/3 entspricht 4/6, also 4/6 - 1/6 = 3/6 = 1/2." },
-        { "type": "multiple-choice", "prompt": "Berechne 3/5 + 3/10.", "options": ["9/10", "6/15", "3/10", "1"], "correctIndex": 0, "explanation": "3/5 entspricht 6/10, also 6/10 + 3/10 = 9/10." }
+        { "prompt": "Berechne 1/4 + 1/2.", "options": ["2/6", "3/4", "1/6", "2/4"], "correctIndex": 1, "explanation": "1/2 entspricht 2/4, also ergibt 1/4 + 2/4 = 3/4." },
+        { "prompt": "Berechne 2/3 + 1/6.", "options": ["3/9", "5/6", "1/2", "3/6"], "correctIndex": 1, "explanation": "2/3 entspricht 4/6, also 4/6 + 1/6 = 5/6." },
+        { "prompt": "Berechne 1/3 + 1/3 + 1/3.", "options": ["1", "3/3", "2/3", "1/9"], "correctIndex": 0, "explanation": "Drei Drittel ergeben zusammen ein Ganzes: 1." },
+        { "prompt": "Berechne 3/4 - 1/4.", "options": ["1/2", "2/4", "1/4", "1"], "correctIndex": 0, "explanation": "3/4 - 1/4 = 2/4, gekürzt ergibt das 1/2." },
+        { "prompt": "Berechne 5/6 - 1/3.", "options": ["1/2", "4/6", "2/3", "1/6"], "correctIndex": 0, "explanation": "1/3 entspricht 2/6, also 5/6 - 2/6 = 3/6 = 1/2." },
+        { "prompt": "Berechne 1/2 + 1/3.", "options": ["5/6", "2/5", "1/6", "2/6"], "correctIndex": 0, "explanation": "Mit Hauptnenner 6: 3/6 + 2/6 = 5/6." },
+        { "prompt": "Berechne 7/8 - 1/2.", "options": ["3/8", "6/8", "1/4", "1/8"], "correctIndex": 0, "explanation": "1/2 entspricht 4/8, also 7/8 - 4/8 = 3/8." },
+        { "prompt": "Berechne 1/5 + 2/5 + 1/5.", "options": ["4/5", "3/5", "4/15", "1"], "correctIndex": 0, "explanation": "Bei gleichem Nenner werden nur die Zähler addiert: 1+2+1=4, also 4/5." },
+        { "prompt": "Berechne 2/3 - 1/6.", "options": ["1/2", "3/6", "1/6", "5/6"], "correctIndex": 0, "explanation": "2/3 entspricht 4/6, also 4/6 - 1/6 = 3/6 = 1/2." },
+        { "prompt": "Berechne 3/5 + 3/10.", "options": ["9/10", "6/15", "3/10", "1"], "correctIndex": 0, "explanation": "3/5 entspricht 6/10, also 6/10 + 3/10 = 9/10." }
       ]
     }
   ]
