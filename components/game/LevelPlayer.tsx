@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Level } from "@/types/generation";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { QuestionCard } from "./QuestionCard";
@@ -34,6 +34,13 @@ export function LevelPlayer({
   // React commits the state update can't slip through and answer/advance twice per tap.
   const answeredRef = useRef(false);
   const advancingRef = useRef(false);
+  // Timestamp until which a tap on an answer option is ignored. A tap that changes the
+  // layout (advancing to a new question, or entering the level from the level map) can
+  // trigger a *second*, slightly delayed click/touch event from the same physical tap that
+  // now lands on whatever the layout shows in that spot next - here, a fresh option button.
+  // Clearing answeredRef immediately let that delayed click answer the new question too, so
+  // instead this stays engaged for a short cooldown after every question change.
+  const readyAtRef = useRef(0);
 
   const question = level.questions[index];
   const isLast = index === level.questions.length - 1;
@@ -41,8 +48,12 @@ export function LevelPlayer({
   const isCorrect = answered && selected === question.correctIndex;
   const snapsForThisQuestion = SNAPS_BY_DIFFICULTY[level.difficulty] ?? 10;
 
+  useEffect(() => {
+    readyAtRef.current = Date.now() + 400;
+  }, [index]);
+
   function handleSelect(optionIndex: number) {
-    if (answeredRef.current) return;
+    if (answeredRef.current || Date.now() < readyAtRef.current) return;
     answeredRef.current = true;
     setSelected(optionIndex);
     if (optionIndex === question.correctIndex) {
