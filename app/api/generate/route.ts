@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { track } from "@vercel/analytics/server";
 import { profileSchema, outputFormats, type OutputFormat } from "@/types/generation";
 import { ALLOWED_MIME_TYPES, MAX_FILES, MAX_TOTAL_SIZE, filesToClaudeBlocks } from "@/lib/files/extract-input";
 import { generateWorksheet } from "@/lib/generators/worksheet";
@@ -84,6 +85,7 @@ export async function POST(request: NextRequest) {
       const data = await generateWorksheet(profile, fileBlocks, locale);
       const pdf = await renderWorksheetPdf(data, profile);
       const filename = `${slugify(data.title)}.pdf`;
+      await track("Material generated", { format });
       return NextResponse.json({ data, filename, pdfBase64: Buffer.from(pdf).toString("base64") });
     }
 
@@ -91,17 +93,20 @@ export async function POST(request: NextRequest) {
       const data = await generateTest(profile, fileBlocks, locale);
       const pdf = await renderTestPdf(data, profile);
       const filename = `${slugify(data.title)}.pdf`;
+      await track("Material generated", { format });
       return NextResponse.json({ data, filename, pdfBase64: Buffer.from(pdf).toString("base64") });
     }
 
     if (format === "game") {
       const game = await generateGameLevels(profile, fileBlocks, locale);
+      await track("Material generated", { format });
       return NextResponse.json({ game });
     }
 
     const podcast = await generatePodcastScript(profile, fileBlocks, locale);
     const audio = await synthesizeSpeech(podcast.script);
     const filename = `${slugify(podcast.title)}.mp3`;
+    await track("Material generated", { format });
     return NextResponse.json({
       title: podcast.title,
       script: podcast.script,
