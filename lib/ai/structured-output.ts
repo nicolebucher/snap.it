@@ -43,7 +43,10 @@ export async function generateStructuredOutput<T extends z.ZodTypeAny>({
   let lastError: string | null = null;
 
   for (let attempt = 0; attempt < 3; attempt++) {
-    const message = await client.messages.create({
+    // .stream() + finalMessage() statt .create(): Bei hohem max_tokens (z.B. für das
+    // Lernspiel mit bis zu 5 Leveln x 15 Fragen) verlangt die Anthropic-SDK Streaming,
+    // da eine Non-Streaming-Anfrage sonst als potenziell zu lang abgelehnt wird.
+    const stream = client.messages.stream({
       model: CLAUDE_MODEL,
       max_tokens: maxTokens,
       system: lastError
@@ -53,6 +56,7 @@ export async function generateStructuredOutput<T extends z.ZodTypeAny>({
       tool_choice: { type: "tool", name: toolName },
       messages: [{ role: "user", content: userContent }],
     });
+    const message = await stream.finalMessage();
 
     if (message.stop_reason === "max_tokens") {
       lastError = "Antwort wurde wegen Längenbegrenzung abgeschnitten";

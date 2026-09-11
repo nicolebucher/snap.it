@@ -15,7 +15,6 @@ export type OutputFormat = (typeof outputFormats)[number];
 // Alle Profilangaben sind bewusst optional - das Lernmaterial im Upload trägt den
 // eigentlichen Inhalt, Alter/Klasse/Schulart/Fach dienen nur der Feinabstimmung.
 export const profileSchema = z.object({
-  age: z.coerce.number().int().min(5).max(21).optional(),
   schoolType: z.enum(schoolTypes).optional(),
   grade: z.coerce.number().int().min(1).max(13).optional(),
   subject: z.string().trim().min(2).max(60).optional(),
@@ -28,7 +27,6 @@ export type Profile = z.infer<typeof profileSchema>;
 // fehlen: Oberschule (allgemeine Sekundarstufe) als Standardannahme, Klasse aus dem Material schätzen.
 export function describeProfile(profile: Profile): string {
   const parts: string[] = [];
-  parts.push(profile.age !== undefined ? `${profile.age} years old` : "age not given");
   parts.push(
     profile.schoolType
       ? profile.schoolType

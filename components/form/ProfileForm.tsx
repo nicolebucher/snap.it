@@ -17,17 +17,6 @@ export function ProfileForm({
       <p className="mb-2 text-sm text-zinc-400">{t.profile.hint}</p>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm font-medium">
-          {t.profile.age}
-          <input
-            type="number"
-            min={5}
-            max={21}
-            value={profile.age ?? ""}
-            onChange={(e) => onChange({ ...profile, age: e.target.value ? Number(e.target.value) : undefined })}
-            className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-sm font-medium">
           {t.profile.grade}
           <input
             type="number"

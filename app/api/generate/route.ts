@@ -64,7 +64,6 @@ export async function POST(request: NextRequest) {
   }
 
   const profileResult = profileSchema.safeParse({
-    age: nullToUndefined(formData.get("age")),
     schoolType: nullToUndefined(formData.get("schoolType")),
     grade: nullToUndefined(formData.get("grade")),
     subject: nullToUndefined(formData.get("subject")),

@@ -40,7 +40,6 @@ export function CreationWizard() {
     setErrorMessage("");
 
     const body = new FormData();
-    if (profile.age !== undefined) body.set("age", String(profile.age));
     if (profile.grade !== undefined) body.set("grade", String(profile.grade));
     if (profile.schoolType) body.set("schoolType", profile.schoolType);
     if (profile.subject) body.set("subject", profile.subject);
@@ -110,10 +109,7 @@ export function CreationWizard() {
       <div className="mx-auto max-w-2xl text-center">
         <p className="mb-4 text-lg font-semibold">{t.wizard.done}</p>
 
-        <p className="mb-2 text-left text-xs uppercase tracking-wide text-zinc-500">{t.wizard.preview}</p>
-        <PdfPreview url={downloadInfo.url} label={downloadLabel} />
-
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <div className="sticky top-2 z-10 mb-4 flex flex-wrap items-center justify-center gap-3 rounded-full bg-black/90 p-2 backdrop-blur">
           <a
             href={downloadInfo.url}
             download={downloadInfo.filename}
@@ -125,6 +121,9 @@ export function CreationWizard() {
             getFile={() => new File([downloadInfo.blob], downloadInfo.filename, { type: "application/pdf" })}
           />
         </div>
+
+        <p className="mb-2 text-left text-xs uppercase tracking-wide text-zinc-500">{t.wizard.preview}</p>
+        <PdfPreview url={downloadInfo.url} label={downloadLabel} />
 
         <div className="mt-6">
           <button type="button" onClick={handleRestart} className="text-sm text-teal-400 hover:underline">

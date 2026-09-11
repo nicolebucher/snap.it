@@ -11,7 +11,6 @@ const en = {
   },
   profile: {
     hint: "All fields are optional — they just help the AI match the right level.",
-    age: "Age (optional)",
     grade: "Grade (optional)",
     schoolType: "School type (optional)",
     schoolTypeNone: "No preference",
@@ -119,7 +118,6 @@ const de: typeof en = {
   },
   profile: {
     hint: "Alle Angaben sind optional — sie helfen der KI nur, das Niveau besser zu treffen.",
-    age: "Alter (optional)",
     grade: "Klasse (optional)",
     schoolType: "Schulart (optional)",
     schoolTypeNone: "Keine Angabe",
