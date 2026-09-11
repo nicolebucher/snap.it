@@ -50,17 +50,34 @@ export function formatProfileMeta(profile: Profile, gradeLabel: string): string 
     .join(" · ");
 }
 
-export const taskSchema = z.object({
-  number: z.number(),
-  question: z.string(),
-  type: z.enum(["offen", "multiple-choice", "lueckentext", "unterstreichen", "zuordnen"]),
-  // multiple-choice: die Antwortoptionen. unterstreichen: die Wörter/Phrasen zum Ankreuzen/Unterstreichen.
-  options: z.array(z.string()).optional(),
-  // nur für type "zuordnen": linke/rechte Spalte zum Zuordnen (rechte Spalte wird beim Rendern gemischt).
-  pairs: z.array(z.object({ left: z.string(), right: z.string() })).optional(),
-  points: z.number(),
-  answer: z.string(),
-});
+export const taskSchema = z
+  .object({
+    number: z.number(),
+    question: z.string(),
+    type: z.enum(["offen", "multiple-choice", "lueckentext", "unterstreichen", "zuordnen"]),
+    // multiple-choice: die Antwortoptionen. unterstreichen: die Wörter/Phrasen zum Ankreuzen/Unterstreichen.
+    options: z.array(z.string()).optional(),
+    // nur für type "zuordnen": linke/rechte Spalte zum Zuordnen (rechte Spalte wird beim Rendern gemischt).
+    pairs: z.array(z.object({ left: z.string(), right: z.string() })).optional(),
+    points: z.number(),
+    answer: z.string(),
+  })
+  // Verhindert eine Lösung, die nicht zur Aufgabe passt: bei multiple-choice/unterstreichen muss
+  // "answer" wortgleich eine der "options" sein, statt z.B. ein Buchstabe oder eine Umschreibung -
+  // sonst schlägt die Validierung fehl und der Retry in structured-output.ts fordert eine Korrektur an.
+  .refine(
+    (task) => {
+      if (task.type === "multiple-choice" || task.type === "unterstreichen") {
+        return !!task.options && task.options.includes(task.answer);
+      }
+      return true;
+    },
+    {
+      message:
+        'For a "multiple-choice" or "unterstreichen" task, "answer" must be an exact, verbatim copy of one of the "options" strings - not a letter, index, or paraphrase.',
+      path: ["answer"],
+    }
+  );
 export type Task = z.infer<typeof taskSchema>;
 
 // Von der KI in derselben Sprache wie der restliche Inhalt zurückgegebene Beschriftungen -
@@ -93,12 +110,18 @@ export const testSchema = z.object({
   labels: pdfLabelsSchema,
 });
 
-export const questionSchema = z.object({
-  prompt: z.string(),
-  options: z.array(z.string()).min(2).max(5),
-  correctIndex: z.number().int().min(0),
-  explanation: z.string(),
-});
+export const questionSchema = z
+  .object({
+    prompt: z.string(),
+    options: z.array(z.string()).min(2).max(5),
+    correctIndex: z.number().int().min(0),
+    explanation: z.string(),
+  })
+  // Verhindert eine Lösung, die nicht zur Aufgabe passt (out-of-range correctIndex).
+  .refine((q) => q.correctIndex < q.options.length, {
+    message: '"correctIndex" must be a valid 0-based index into "options" (correctIndex < options.length).',
+    path: ["correctIndex"],
+  });
 export type Question = z.infer<typeof questionSchema>;
 
 // Level bewusst länger (mind. 10 Aufgaben je Level).

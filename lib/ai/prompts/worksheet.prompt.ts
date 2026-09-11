@@ -38,6 +38,19 @@ Create a thorough worksheet for independent practice that spans several A4 pages
   matches (e.g. "1-B, 2-A, 3-C"); for "unterstreichen" give the correct word/phrase
 - a short, motivating introduction (2-3 sentences)
 
+Answer-key accuracy is critical - a wrong or mismatched answer key is a serious failure, worse than
+a slightly-off difficulty level:
+- for "multiple-choice" and "unterstreichen", "answer" must be an exact, verbatim copy of one of
+  the strings in "options" - never a letter, an index, or a paraphrase
+- before finalizing each task, re-read the question and your chosen "answer" together and verify
+  they actually match - that the option you named is truly and unambiguously the one correct
+  answer to the question exactly as worded
+- when several tasks test the same vocabulary/word list with "multiple-choice", phrase all of them
+  using ONE consistent question template (e.g. always "What does '___' mean?" with translations as
+  the options, or always the same translation direction) - do not mix different framings for the
+  same vocabulary set, since that produces items where more than one option could defensibly be
+  "correct"
+
 Detect the language used in the attached material and write all content (title, introduction,
 questions, answers) in that same language, even if it differs from the language of these
 instructions. If the material's language cannot be clearly determined (e.g. it's mostly numbers

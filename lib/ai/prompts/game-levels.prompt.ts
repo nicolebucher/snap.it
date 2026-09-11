@@ -29,7 +29,14 @@ For every level:
 - a short, clear explanation per question of why the answer is correct
 - questions within a level should vary in wording and example, not repeat each other
 
-Questions should be age-appropriate, unambiguous, and factually correct.
+Questions should be age-appropriate, unambiguous, and factually correct. A wrong or mismatched
+answer key (a "correctIndex" that isn't truly the correct option) is a serious failure - before
+finalizing each question, re-read it together with the option at "correctIndex" and verify they
+actually match. When several questions in a level test the same vocabulary/word list, phrase all
+of them using ONE consistent question template (e.g. always "What does '___' mean?" with
+translations as the options, or always the same translation direction) - do not mix different
+framings for the same vocabulary set, since that produces items where more than one option could
+defensibly be "correct".
 
 Detect the language used in the attached material and write all content (titles, questions,
 options, explanations) in that same language, even if it differs from the language of these
