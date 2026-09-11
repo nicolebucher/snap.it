@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Level } from "@/types/generation";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { QuestionCard } from "./QuestionCard";
@@ -29,6 +29,11 @@ export function LevelPlayer({
   const [correctCount, setCorrectCount] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [snapBurst, setSnapBurst] = useState<{ key: number; amount: number } | null>(null);
+  // Mirrors `answered`/advance-in-progress synchronously so a second click/tap event
+  // (e.g. a touch device firing both `touchend` and a synthetic `click`) landing before
+  // React commits the state update can't slip through and answer/advance twice per tap.
+  const answeredRef = useRef(false);
+  const advancingRef = useRef(false);
 
   const question = level.questions[index];
   const isLast = index === level.questions.length - 1;
@@ -37,7 +42,8 @@ export function LevelPlayer({
   const snapsForThisQuestion = SNAPS_BY_DIFFICULTY[level.difficulty] ?? 10;
 
   function handleSelect(optionIndex: number) {
-    if (answered) return;
+    if (answeredRef.current) return;
+    answeredRef.current = true;
     setSelected(optionIndex);
     if (optionIndex === question.correctIndex) {
       setCorrectCount((c) => c + 1);
@@ -47,6 +53,8 @@ export function LevelPlayer({
   }
 
   function handleNext() {
+    if (advancingRef.current) return;
+    advancingRef.current = true;
     setSnapBurst(null);
     if (isLast) {
       const ratio = correctCount / level.questions.length;
@@ -54,6 +62,8 @@ export function LevelPlayer({
       onComplete({ stars, score: correctCount });
     } else {
       setSelected(null);
+      answeredRef.current = false;
+      advancingRef.current = false;
       setIndex((i) => i + 1);
     }
   }
