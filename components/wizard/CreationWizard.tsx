@@ -14,14 +14,23 @@ import { useLanguage } from "@/lib/i18n/language-context";
 import { MAX_TOTAL_SIZE } from "@/lib/files/extract-input";
 import type { GameData, OutputFormat, Profile, WorksheetData } from "@/types/generation";
 
-type Step = "input" | "loading" | "result-file" | "result-game" | "error";
+type Step = "input" | "loading" | "result-file" | "result-game" | "result-podcast" | "error";
 type ResultTab = "preview" | "practice";
+type PodcastTab = "listen" | "transcript";
 
 interface DownloadInfo {
   url: string;
   filename: string;
   blob: Blob;
   data: WorksheetData;
+}
+
+interface PodcastInfo {
+  url: string;
+  filename: string;
+  blob: Blob;
+  title: string;
+  script: string;
 }
 
 function base64ToBlob(base64: string, type: string): Blob {
@@ -38,8 +47,10 @@ export function CreationWizard() {
   const [format, setFormat] = useState<OutputFormat | null>(null);
   const [step, setStep] = useState<Step>("input");
   const [resultTab, setResultTab] = useState<ResultTab>("preview");
+  const [podcastTab, setPodcastTab] = useState<PodcastTab>("listen");
   const [errorMessage, setErrorMessage] = useState("");
   const [downloadInfo, setDownloadInfo] = useState<DownloadInfo | null>(null);
+  const [podcastInfo, setPodcastInfo] = useState<PodcastInfo | null>(null);
   const [game, setGame] = useState<GameData | null>(null);
 
   const totalSize = files.reduce((sum, file) => sum + file.size, 0);
@@ -70,6 +81,12 @@ export function CreationWizard() {
       if (format === "game") {
         setGame(json.game);
         setStep("result-game");
+      } else if (format === "podcast") {
+        const blob = base64ToBlob(json.audioBase64, "audio/mpeg");
+        const url = URL.createObjectURL(blob);
+        setPodcastInfo({ url, filename: json.filename, blob, title: json.title, script: json.script });
+        setPodcastTab("listen");
+        setStep("result-podcast");
       } else {
         const blob = base64ToBlob(json.pdfBase64, "application/pdf");
         const url = URL.createObjectURL(blob);
@@ -89,6 +106,7 @@ export function CreationWizard() {
     setFormat(null);
     setGame(null);
     setDownloadInfo(null);
+    setPodcastInfo(null);
     setErrorMessage("");
   }
 
@@ -105,6 +123,65 @@ export function CreationWizard() {
       <div>
         <GameShell game={game} />
         <div className="mt-8 text-center">
+          <button type="button" onClick={handleRestart} className="text-sm text-teal-400 hover:underline">
+            {t.wizard.newMaterial}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === "result-podcast" && podcastInfo) {
+    return (
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="mb-4 text-lg font-semibold">{t.wizard.done}</p>
+
+        <div className="sticky top-2 z-10 mb-4 flex flex-wrap items-center justify-center gap-3 rounded-full bg-black/90 p-2 backdrop-blur">
+          <a
+            href={podcastInfo.url}
+            download={podcastInfo.filename}
+            className="inline-block rounded-full bg-teal-400 px-6 py-3 font-medium text-black hover:bg-teal-300"
+          >
+            {t.wizard.downloadPodcast}
+          </a>
+          <ShareButton
+            getFile={() => new File([podcastInfo.blob], podcastInfo.filename, { type: "audio/mpeg" })}
+          />
+        </div>
+
+        <div className="mb-4 flex justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPodcastTab("listen")}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+              podcastTab === "listen" ? "bg-teal-400 text-black" : "border border-zinc-700 text-zinc-400"
+            }`}
+          >
+            {t.wizard.preview}
+          </button>
+          <button
+            type="button"
+            onClick={() => setPodcastTab("transcript")}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+              podcastTab === "transcript" ? "bg-teal-400 text-black" : "border border-zinc-700 text-zinc-400"
+            }`}
+          >
+            {t.wizard.transcriptTab}
+          </button>
+        </div>
+
+        {podcastTab === "listen" ? (
+          <div className="rounded-2xl border border-zinc-700 p-6">
+            <p className="mb-4 font-semibold">{podcastInfo.title}</p>
+            <audio controls src={podcastInfo.url} className="w-full" />
+          </div>
+        ) : (
+          <div className="max-h-[60vh] overflow-y-auto rounded-2xl border border-zinc-700 p-6 text-left text-sm leading-relaxed whitespace-pre-wrap text-zinc-300">
+            {podcastInfo.script}
+          </div>
+        )}
+
+        <div className="mt-6">
           <button type="button" onClick={handleRestart} className="text-sm text-teal-400 hover:underline">
             {t.wizard.newMaterial}
           </button>

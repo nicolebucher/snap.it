@@ -3,18 +3,20 @@
 import type { ComponentType } from "react";
 import type { OutputFormat } from "@/types/generation";
 import { useLanguage } from "@/lib/i18n/language-context";
-import { GameIcon, TestIcon, WorksheetIcon } from "@/components/icons/FormatIcons";
+import { GameIcon, PodcastIcon, TestIcon, WorksheetIcon } from "@/components/icons/FormatIcons";
 
 const ICONS: Record<OutputFormat, ComponentType<{ className?: string }>> = {
   worksheet: WorksheetIcon,
   test: TestIcon,
   game: GameIcon,
+  podcast: PodcastIcon,
 };
 
 const ROTATIONS: Record<OutputFormat, string> = {
   worksheet: "-rotate-6",
   test: "rotate-3",
   game: "-rotate-3",
+  podcast: "rotate-6",
 };
 
 const DRIP_PATH = "M10 2c-2 4-4 6-4 9a4 4 0 0 0 8 0c0-3-2-5-4-9z";
@@ -31,12 +33,13 @@ export function FormatSelector({
     { value: "worksheet", ...t.format.worksheet },
     { value: "test", ...t.format.test },
     { value: "game", ...t.format.game },
+    { value: "podcast", ...t.format.podcast },
   ];
 
   return (
     <div className="mb-6">
       <p className="mb-2 text-sm font-medium">{t.format.heading}</p>
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="grid gap-3 sm:grid-cols-2">
         {formats.map((f) => {
           const Icon = ICONS[f.value];
           const selected = value === f.value;
@@ -45,7 +48,7 @@ export function FormatSelector({
               key={f.value}
               type="button"
               onClick={() => onChange(f.value)}
-              className={`flex flex-1 items-center gap-4 rounded-xl border p-4 text-left transition ${
+              className={`flex items-center gap-4 rounded-xl border p-4 text-left transition ${
                 selected ? "border-teal-400 bg-teal-400/10" : "border-zinc-700 hover:border-teal-400/50"
               }`}
             >

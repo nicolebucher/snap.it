@@ -42,6 +42,7 @@ const en = {
     worksheet: { label: "Worksheet", description: "For practice, with an answer key" },
     test: { label: "Test", description: "Just like a real exam" },
     game: { label: "Learning game", description: "Play through levels and earn points" },
+    podcast: { label: "Podcast", description: "An MP3 episode you can listen to" },
   },
   wizard: {
     submit: "Create material",
@@ -49,9 +50,11 @@ const en = {
     done: "Done! 🎉",
     downloadWorksheet: "Download worksheet",
     downloadTest: "Download test",
+    downloadPodcast: "Download podcast",
     preview: "Preview",
     previewTab: "PDF preview",
     practiceTab: "Practice online",
+    transcriptTab: "Transcript",
   },
   share: {
     button: "Share",
@@ -158,6 +161,7 @@ const de: typeof en = {
     worksheet: { label: "Arbeitsblatt", description: "Zum Üben mit Musterlösung" },
     test: { label: "Testarbeit", description: "Wie eine echte Klassenarbeit" },
     game: { label: "Lernspiel", description: "Level spielen und Punkte sammeln" },
+    podcast: { label: "Podcast", description: "Eine MP3-Folge zum Anhören" },
   },
   wizard: {
     submit: "Material erstellen",
@@ -165,9 +169,11 @@ const de: typeof en = {
     done: "Fertig! 🎉",
     downloadWorksheet: "Arbeitsblatt herunterladen",
     downloadTest: "Testarbeit herunterladen",
+    downloadPodcast: "Podcast herunterladen",
     preview: "Vorschau",
     previewTab: "PDF-Vorschau",
     practiceTab: "Online üben",
+    transcriptTab: "Transkript",
   },
   share: {
     button: "Teilen",

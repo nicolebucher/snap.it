@@ -9,7 +9,7 @@ export const schoolTypes = [
   "Berufsschule",
 ] as const;
 
-export const outputFormats = ["worksheet", "test", "game"] as const;
+export const outputFormats = ["worksheet", "test", "game", "podcast"] as const;
 export type OutputFormat = (typeof outputFormats)[number];
 
 // Alle Profilangaben sind bewusst optional - das Lernmaterial im Upload trägt den
@@ -116,3 +116,11 @@ export const gameSchema = z.object({
   levels: z.array(levelSchema).min(2).max(5),
 });
 export type GameData = z.infer<typeof gameSchema>;
+
+// Ein-Sprecher-Skript (bewusst kein Multi-Speaker-Dialog, damit kein Audio-Mixing/ffmpeg
+// nötig ist). "script" enthält die vollständige Erzählung, in Absätze gegliedert.
+export const podcastScriptSchema = z.object({
+  title: z.string(),
+  script: z.string(),
+});
+export type PodcastScript = z.infer<typeof podcastScriptSchema>;

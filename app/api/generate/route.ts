@@ -4,6 +4,8 @@ import { ALLOWED_MIME_TYPES, MAX_FILES, MAX_TOTAL_SIZE, filesToClaudeBlocks } fr
 import { generateWorksheet } from "@/lib/generators/worksheet";
 import { generateTest } from "@/lib/generators/test";
 import { generateGameLevels } from "@/lib/generators/game-levels";
+import { generatePodcastScript } from "@/lib/generators/podcast";
+import { synthesizeSpeech } from "@/lib/ai/tts/elevenlabs";
 import { renderWorksheetPdf } from "@/lib/pdf/render-worksheet-pdf";
 import { renderTestPdf } from "@/lib/pdf/render-test-pdf";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -11,7 +13,8 @@ import { slugify } from "@/lib/slugify";
 import { locales, t, type Locale } from "@/lib/i18n/translations";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+// Podcast-Generierung braucht Skript (Claude) + mehrere sequenzielle TTS-Chunks (ElevenLabs).
+export const maxDuration = 120;
 
 function isOutputFormat(value: unknown): value is OutputFormat {
   return typeof value === "string" && (outputFormats as readonly string[]).includes(value);
@@ -91,8 +94,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ data, filename, pdfBase64: Buffer.from(pdf).toString("base64") });
     }
 
-    const game = await generateGameLevels(profile, fileBlocks, locale);
-    return NextResponse.json({ game });
+    if (format === "game") {
+      const game = await generateGameLevels(profile, fileBlocks, locale);
+      return NextResponse.json({ game });
+    }
+
+    const podcast = await generatePodcastScript(profile, fileBlocks, locale);
+    const audio = await synthesizeSpeech(podcast.script);
+    const filename = `${slugify(podcast.title)}.mp3`;
+    return NextResponse.json({
+      title: podcast.title,
+      script: podcast.script,
+      filename,
+      audioBase64: Buffer.from(audio).toString("base64"),
+    });
   } catch (error) {
     console.error("Generation failed:", error instanceof Error ? error.message : error);
     return NextResponse.json({ error: messages.generationFailed }, { status: 500 });
