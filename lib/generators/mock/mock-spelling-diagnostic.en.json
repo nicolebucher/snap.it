@@ -1,0 +1,17 @@
+{
+  "title": "Spelling Check: Fractions Vocabulary",
+  "items": [
+    { "number": 1, "sentence": "You can ___ a fraction by dividing both numbers by the same value.", "correctSpelling": "simplify" },
+    { "number": 2, "sentence": "The bottom number of a fraction is called the ___.", "correctSpelling": "denominator" },
+    { "number": 3, "sentence": "The top number of a fraction is called the ___.", "correctSpelling": "numerator" },
+    { "number": 4, "sentence": "To ___ a fraction, you multiply both numbers by the same value.", "correctSpelling": "expand" },
+    { "number": 5, "sentence": "A fraction that cannot be simplified any further is fully ___.", "correctSpelling": "reduced" },
+    { "number": 6, "sentence": "Two fractions with the same value are called ___ fractions.", "correctSpelling": "equivalent" },
+    { "number": 7, "sentence": "A fraction greater than one whole is called an ___ fraction.", "correctSpelling": "improper" },
+    { "number": 8, "sentence": "When you divide fractions, you multiply by the ___.", "correctSpelling": "reciprocal" },
+    { "number": 9, "sentence": "A whole number written next to a fraction is called a ___ number.", "correctSpelling": "mixed" },
+    { "number": 10, "sentence": "A number that both denominators can be divided into evenly is a common ___.", "correctSpelling": "denominator" },
+    { "number": 11, "sentence": "Fractions describe parts of a ___.", "correctSpelling": "whole" },
+    { "number": 12, "sentence": "To find how many parts fit into a whole, you can use ___.", "correctSpelling": "division" }
+  ]
+}

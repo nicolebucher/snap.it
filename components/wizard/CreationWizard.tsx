@@ -10,13 +10,28 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { ShareButton } from "@/components/ui/ShareButton";
 import { PdfPreview } from "@/components/pdf/PdfPreview";
 import { InteractiveWorksheet } from "@/components/worksheet/InteractiveWorksheet";
+import { SpellingDiagnosticPlayer } from "@/components/spelling/SpellingDiagnosticPlayer";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { MAX_TOTAL_SIZE } from "@/lib/files/extract-input";
-import type { GameData, OutputFormat, Profile, WorksheetData } from "@/types/generation";
+import type { GameData, OutputFormat, Profile, SpellingDiagnostic, SpellingItem, WorksheetData } from "@/types/generation";
 
-type Step = "input" | "loading" | "result-file" | "result-game" | "result-podcast" | "error";
+type Step =
+  | "input"
+  | "loading"
+  | "result-file"
+  | "result-game"
+  | "result-podcast"
+  | "spelling-diagnostic"
+  | "spelling-summary"
+  | "error";
 type ResultTab = "preview" | "practice";
 type PodcastTab = "listen" | "transcript";
+
+interface SpellingResult {
+  missed: SpellingItem[];
+  correctCount: number;
+  total: number;
+}
 
 interface DownloadInfo {
   url: string;
@@ -52,12 +67,16 @@ export function CreationWizard() {
   const [downloadInfo, setDownloadInfo] = useState<DownloadInfo | null>(null);
   const [podcastInfo, setPodcastInfo] = useState<PodcastInfo | null>(null);
   const [game, setGame] = useState<GameData | null>(null);
+  const [diagnostic, setDiagnostic] = useState<SpellingDiagnostic | null>(null);
+  const [spellingResult, setSpellingResult] = useState<SpellingResult | null>(null);
+  const [loadingTitle, setLoadingTitle] = useState<string | undefined>(undefined);
 
   const totalSize = files.reduce((sum, file) => sum + file.size, 0);
   const canSubmit = files.length > 0 && !!format && totalSize <= MAX_TOTAL_SIZE;
 
   async function handleSubmit() {
     if (!canSubmit || !format) return;
+    setLoadingTitle(undefined);
     setStep("loading");
     setErrorMessage("");
 
@@ -81,6 +100,9 @@ export function CreationWizard() {
       if (format === "game") {
         setGame(json.game);
         setStep("result-game");
+      } else if (format === "spelling") {
+        setDiagnostic(json.diagnostic);
+        setStep("spelling-diagnostic");
       } else if (format === "podcast") {
         const blob = base64ToBlob(json.audioBase64, "audio/mpeg");
         const url = URL.createObjectURL(blob);
@@ -100,6 +122,46 @@ export function CreationWizard() {
     }
   }
 
+  function handleDiagnosticComplete(missed: SpellingItem[], correctCount: number) {
+    if (!diagnostic) return;
+    setSpellingResult({ missed, correctCount, total: diagnostic.items.length });
+    setStep("spelling-summary");
+  }
+
+  async function handleBuildFollowup() {
+    if (!spellingResult || spellingResult.missed.length === 0) return;
+    setLoadingTitle(t.spelling.buildingWorksheet);
+    setStep("loading");
+    setErrorMessage("");
+
+    const body = new FormData();
+    if (profile.grade !== undefined) body.set("grade", String(profile.grade));
+    if (profile.schoolType) body.set("schoolType", profile.schoolType);
+    if (profile.subject) body.set("subject", profile.subject);
+    if (profile.notes) body.set("notes", profile.notes);
+    body.set("format", "spelling");
+    body.set("phase", "followup");
+    body.set("missed", JSON.stringify(spellingResult.missed));
+    body.set("locale", locale);
+    files.forEach((file) => body.append("file", file));
+
+    try {
+      const response = await fetch("/api/generate", { method: "POST", body });
+      const json = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(json?.error ?? "Something went wrong.");
+      }
+      const blob = base64ToBlob(json.pdfBase64, "application/pdf");
+      const url = URL.createObjectURL(blob);
+      setDownloadInfo({ url, filename: json.filename, blob, data: json.data });
+      setResultTab("preview");
+      setStep("result-file");
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Unknown error.");
+      setStep("error");
+    }
+  }
+
   function handleRestart() {
     setStep("input");
     setFiles([]);
@@ -107,11 +169,13 @@ export function CreationWizard() {
     setGame(null);
     setDownloadInfo(null);
     setPodcastInfo(null);
+    setDiagnostic(null);
+    setSpellingResult(null);
     setErrorMessage("");
   }
 
   if (step === "loading") {
-    return <LoadingState />;
+    return <LoadingState title={loadingTitle} />;
   }
 
   if (step === "error") {
@@ -123,6 +187,50 @@ export function CreationWizard() {
       <div>
         <GameShell game={game} />
         <div className="mt-8 text-center">
+          <button type="button" onClick={handleRestart} className="text-sm text-teal-400 hover:underline">
+            {t.wizard.newMaterial}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === "spelling-diagnostic" && diagnostic) {
+    return <SpellingDiagnosticPlayer diagnostic={diagnostic} onComplete={handleDiagnosticComplete} />;
+  }
+
+  if (step === "spelling-summary" && spellingResult) {
+    return (
+      <div className="mx-auto max-w-xl text-center">
+        <p className="mb-2 text-lg font-semibold">{t.spelling.summaryTitle}</p>
+        <p className="mb-6 text-zinc-400">{t.spelling.summaryScore(spellingResult.correctCount, spellingResult.total)}</p>
+
+        {spellingResult.missed.length === 0 ? (
+          <p className="mb-6 text-green-400">{t.spelling.summaryAllCorrect}</p>
+        ) : (
+          <div className="mb-6 rounded-xl border border-zinc-700 p-4 text-left">
+            <p className="mb-2 text-sm font-medium text-zinc-400">{t.spelling.missedHeading}</p>
+            <ul className="flex flex-wrap gap-2">
+              {spellingResult.missed.map((item, i) => (
+                <li key={i} className="rounded-full bg-orange-400/10 px-3 py-1 text-sm text-orange-300">
+                  {item.correctSpelling}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {spellingResult.missed.length > 0 && (
+          <button
+            type="button"
+            onClick={handleBuildFollowup}
+            className="mb-4 w-full rounded-full bg-teal-400 px-6 py-3 font-medium text-black hover:bg-teal-300"
+          >
+            {t.spelling.buildWorksheet}
+          </button>
+        )}
+
+        <div>
           <button type="button" onClick={handleRestart} className="text-sm text-teal-400 hover:underline">
             {t.wizard.newMaterial}
           </button>
@@ -191,7 +299,7 @@ export function CreationWizard() {
   }
 
   if (step === "result-file" && downloadInfo && format) {
-    const downloadLabel = format === "worksheet" ? t.wizard.downloadWorksheet : t.wizard.downloadTest;
+    const downloadLabel = format === "test" ? t.wizard.downloadTest : t.wizard.downloadWorksheet;
     return (
       <div className="mx-auto max-w-2xl text-center">
         <p className="mb-4 text-lg font-semibold">{t.wizard.done}</p>

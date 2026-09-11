@@ -15,8 +15,7 @@ Use the attached material (one or more files: study material, notes, or photos o
 as the content basis. Handwritten or photographed material can contain spelling mistakes or
 transcription artifacts - silently use the correct spelling/wording in your output rather than
 reproducing an error, unless the error itself is the point of a question.
-Create 2 to 5 levels that turn the material into engaging multiple-choice
-questions. Levels are NOT a strict linear progression the student must unlock in order - the
+Create 2 to 5 levels that turn the material into an engaging quiz. Levels are NOT a strict linear progression the student must unlock in order - the
 player can jump into any level directly. Instead, each level should represent a distinct
 sub-topic, chapter, or skill/question type found in the material (e.g. different chapters,
 vocabulary vs. grammar, theory vs. application) so a student can pick exactly what they want to
@@ -25,14 +24,26 @@ to increase from level to level).
 
 For every level:
 - a short, motivating title that names the specific sub-topic/category it covers
-- at least 10 (up to 15) questions, each with 3 to 4 answer options and exactly one correct answer (correctIndex)
+- at least 10 (up to 15) questions, genuinely mixing TWO question types within each level (not
+  all of one type) so the game doesn't feel repetitive:
+  - "multiple-choice": "prompt" is the question, "options" has 3-4 choices with exactly one
+    correct answer (correctIndex) - the wrong options must be plausible and genuinely tempting,
+    never so obviously wrong that the question can be solved without knowing the material
+  - "lueckentext": "prompt" is a sentence with a single "___" gap standing in for the word/term
+    the student must recall and type themselves (no options/correctIndex - instead
+    "correctAnswer" holds the exact correct word/phrase, correctly spelled) - use this for
+    recall-from-memory items (a term, a formula, a missing word) rather than pure recognition
+  - roughly balance the two types across a level's questions rather than using only one or two of
+    one type
 - a short, clear explanation per question of why the answer is correct
 - questions within a level should vary in wording and example, not repeat each other
 
 Questions should be age-appropriate, unambiguous, and factually correct. A wrong or mismatched
-answer key (a "correctIndex" that isn't truly the correct option) is a serious failure - before
-finalizing each question, re-read it together with the option at "correctIndex" and verify they
-actually match. When several questions in a level test the same vocabulary/word list, phrase all
+answer key is a serious failure - before finalizing each question, re-read it together with its
+answer ("correctIndex" for multiple-choice, "correctAnswer" for lueckentext) and verify they
+actually match; for lueckentext, also make sure "prompt" makes the intended word unambiguous from
+context and grammar without spelling it out elsewhere in the sentence. When several questions in
+a level test the same vocabulary/word list, phrase all
 of them using ONE consistent question template (e.g. always "What does '___' mean?" with
 translations as the options, or always the same translation direction) - do not mix different
 framings for the same vocabulary set, since that produces items where more than one option could

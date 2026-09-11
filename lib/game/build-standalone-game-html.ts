@@ -22,6 +22,11 @@ export function buildStandaloneGameHtml(game: GameData, locale: Locale): string 
     snapsUnit: labels.game.snapsUnit,
     mixedTitle: labels.game.mixedTitle,
     mixedSubtitle: labels.game.mixedSubtitle,
+    typeAnswerPlaceholder: labels.game.typeAnswerPlaceholder,
+    check: labels.game.check,
+    // "{word}" placeholder gets swapped in client-side (see substituteWord in the script below) -
+    // labels.game.correctAnswerWas is a template function, not serializable as-is into the page.
+    correctAnswerWas: labels.game.correctAnswerWas("{word}"),
   }).replace(/</g, "\\u003c");
 
   return `<!DOCTYPE html>
@@ -115,6 +120,14 @@ export function buildStandaloneGameHtml(game: GameData, locale: Locale): string 
   .feedback.wrong { background: rgba(251, 146, 60, 0.1); color: #fdba74; }
   .feedback p:first-child { font-weight: 600; margin: 0 0 4px; }
   .feedback p { margin: 0; }
+  .blank-wrap { font-size: 15px; line-height: 1.7; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; }
+  .blank-input {
+    min-width: 8rem; text-align: center; background: transparent; border: none;
+    border-bottom: 2px solid #2dd4bf; color: #ffffff; font: inherit; padding: 2px 4px; outline: none;
+  }
+  .blank-input.correct { border-color: #4ade80; color: #86efac; }
+  .blank-input.wrong { border-color: #fb923c; color: #fdba74; }
+  .check-btn { margin-top: 14px; }
   .snap-float {
     position: absolute; top: 8px; right: 12px; color: #2dd4bf; font-weight: 700; font-size: 16px;
     animation: snap-float 1.1s ease-out forwards;
@@ -151,7 +164,13 @@ var SNAPS_BY_DIFFICULTY = { leicht: 10, mittel: 15, schwer: 20 };
 var realLevels = GAME.levels.slice().sort(function (a, b) { return a.id - b.id; });
 var mixedLevel = buildMixedLevel(realLevels);
 var tiles = mixedLevel ? [mixedLevel].concat(realLevels) : realLevels;
-var state = { results: {}, activeLevelId: null, questionIndex: 0, correctCount: 0, selected: null, totalSnaps: 0, justSnapped: false };
+var state = { results: {}, activeLevelId: null, questionIndex: 0, correctCount: 0, selected: null, typedValue: "", checked: false, totalSnaps: 0, justSnapped: false };
+
+function splitBlank(sentence) {
+  var gapIndex = sentence.indexOf("___");
+  if (gapIndex === -1) return [sentence, ""];
+  return [sentence.slice(0, gapIndex), sentence.slice(gapIndex + 3)];
+}
 
 function shuffle(list) {
   var copy = list.slice();
@@ -251,44 +270,77 @@ function renderLevel() {
   var level = tiles.find(function (l) { return l.id === state.activeLevelId; });
   var question = level.questions[state.questionIndex];
   var isLast = state.questionIndex === level.questions.length - 1;
-  var answered = state.selected !== null;
+  var isMultipleChoice = question.type === "multiple-choice";
+  var answered = isMultipleChoice ? state.selected !== null : state.checked;
+  var isCorrect = isMultipleChoice
+    ? state.selected === question.correctIndex
+    : state.typedValue.trim() === question.correctAnswer;
 
-  var options = question.options
-    .map(function (option, i) {
-      var cls = "option";
-      if (answered) {
-        if (i === question.correctIndex) cls += " correct";
-        else if (i === state.selected) cls += " wrong";
-        else cls += " muted";
-      }
-      return (
-        '<button class="' +
-        cls +
-        '" data-option-index="' +
-        i +
-        '" ' +
-        (answered ? "disabled" : "") +
-        ">" +
-        escapeHtml(option) +
-        "</button>"
-      );
-    })
-    .join("");
+  var cardBody;
+  if (isMultipleChoice) {
+    cardBody =
+      '<p class="prompt">' +
+      escapeHtml(question.prompt) +
+      "</p>" +
+      question.options
+        .map(function (option, i) {
+          var cls = "option";
+          if (answered) {
+            if (i === question.correctIndex) cls += " correct";
+            else if (i === state.selected) cls += " wrong";
+            else cls += " muted";
+          }
+          return (
+            '<button class="' + cls + '" data-option-index="' + i + '" ' + (answered ? "disabled" : "") + ">" +
+            escapeHtml(option) +
+            "</button>"
+          );
+        })
+        .join("");
+  } else {
+    var parts = splitBlank(question.prompt);
+    var inputCls = "blank-input" + (answered ? (isCorrect ? " correct" : " wrong") : "");
+    cardBody =
+      '<p class="blank-wrap"><span>' +
+      escapeHtml(parts[0]) +
+      '</span><input type="text" id="blank-input" class="' +
+      inputCls +
+      '" placeholder="' +
+      escapeHtml(STR.typeAnswerPlaceholder) +
+      '" value="' +
+      escapeHtml(state.typedValue) +
+      '" ' +
+      (answered ? "disabled" : "") +
+      "/><span>" +
+      escapeHtml(parts[1]) +
+      "</span></p>" +
+      (answered
+        ? ""
+        : '<button class="primary-btn check-btn" id="check-btn" ' +
+          (state.typedValue.trim() === "" ? "disabled" : "") +
+          ">" +
+          escapeHtml(STR.check) +
+          "</button>");
+  }
 
   var feedback = "";
   var snapFloat = "";
   if (answered) {
-    var isCorrect = state.selected === question.correctIndex;
     if (isCorrect) {
       var earned = SNAPS_BY_DIFFICULTY[level.difficulty] || 10;
       snapFloat = '<div class="snap-float">+' + earned + " " + escapeHtml(STR.snapsUnit) + "</div>";
     }
+    var correctAnswerLine = !isCorrect && !isMultipleChoice
+      ? "<p>" + escapeHtml(STR.correctAnswerWas.replace("{word}", question.correctAnswer)) + "</p>"
+      : "";
     feedback =
       '<div class="feedback ' +
       (isCorrect ? "correct" : "wrong") +
       '"><p>' +
       escapeHtml(isCorrect ? STR.correct : STR.wrong) +
-      "</p><p>" +
+      "</p>" +
+      correctAnswerLine +
+      "<p>" +
       escapeHtml(question.explanation) +
       "</p></div>" +
       '<button class="primary-btn" id="next-btn">' +
@@ -305,10 +357,8 @@ function renderLevel() {
     level.questions.length +
     '</span></div><h2>' +
     escapeHtml(level.title) +
-    '</h2><div class="card"><p class="prompt">' +
-    escapeHtml(question.prompt) +
-    "</p>" +
-    options +
+    '</h2><div class="card">' +
+    cardBody +
     snapFloat +
     "</div>" +
     feedback
@@ -324,6 +374,8 @@ function attachHandlers() {
       state.questionIndex = 0;
       state.correctCount = 0;
       state.selected = null;
+      state.typedValue = "";
+      state.checked = false;
       state.justSnapped = false;
       render();
     });
@@ -354,6 +406,36 @@ function attachHandlers() {
     });
   }
 
+  var blankInput = app.querySelector("#blank-input");
+  if (blankInput) {
+    blankInput.addEventListener("input", function (e) {
+      state.typedValue = e.target.value;
+      var checkBtn = app.querySelector("#check-btn");
+      if (checkBtn) checkBtn.disabled = state.typedValue.trim() === "";
+    });
+    blankInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") submitTypedAnswer();
+    });
+  }
+
+  var checkBtn = app.querySelector("#check-btn");
+  if (checkBtn) {
+    checkBtn.addEventListener("click", submitTypedAnswer);
+  }
+
+  function submitTypedAnswer() {
+    if (state.checked || state.typedValue.trim() === "") return;
+    var level = tiles.find(function (l) { return l.id === state.activeLevelId; });
+    var question = level.questions[state.questionIndex];
+    state.checked = true;
+    if (state.typedValue.trim() === question.correctAnswer) {
+      state.correctCount += 1;
+      state.totalSnaps += SNAPS_BY_DIFFICULTY[level.difficulty] || 10;
+      state.justSnapped = true;
+    }
+    render();
+  }
+
   var nextBtn = app.querySelector("#next-btn");
   if (nextBtn) {
     nextBtn.addEventListener("click", function () {
@@ -368,9 +450,13 @@ function attachHandlers() {
         state.questionIndex = 0;
         state.correctCount = 0;
         state.selected = null;
+        state.typedValue = "";
+        state.checked = false;
       } else {
         state.questionIndex += 1;
         state.selected = null;
+        state.typedValue = "";
+        state.checked = false;
       }
       render();
     });

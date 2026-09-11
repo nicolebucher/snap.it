@@ -7,16 +7,16 @@
       "title": "Understanding fractions",
       "difficulty": "leicht",
       "questions": [
-        { "prompt": "What does the denominator of a fraction show?", "options": ["The total number of parts", "The number of parts taken", "The result of a division", "The greatest common divisor"], "correctIndex": 0, "explanation": "The denominator shows how many parts the whole is divided into." },
-        { "prompt": "What does the numerator of a fraction show?", "options": ["The number of parts taken", "The total number of parts", "The reciprocal", "The sign"], "correctIndex": 0, "explanation": "The numerator sits above the fraction bar and shows how many parts are meant." },
-        { "prompt": "Which fraction represents 'three of four parts'?", "options": ["4/3", "3/4", "1/4", "3/3"], "correctIndex": 1, "explanation": "3/4 means 3 out of 4 equal parts." },
-        { "prompt": "1/2 is equal in value to...", "options": ["2/4", "1/4", "3/4", "2/2"], "correctIndex": 0, "explanation": "2/4 simplifies to 1/2, so both are equal in size." },
-        { "prompt": "Which fraction describes exactly half of a whole?", "options": ["1/3", "1/2", "2/3", "1/4"], "correctIndex": 1, "explanation": "1/2 means exactly half." },
-        { "prompt": "A fraction with numerator = denominator (e.g. 4/4) equals...", "options": ["0", "1", "2", "1/2"], "correctIndex": 1, "explanation": "When the numerator and denominator are equal, the fraction always equals 1 whole." },
-        { "prompt": "Which fraction is greater than 1?", "options": ["3/4", "5/5", "7/6", "2/3"], "correctIndex": 2, "explanation": "In 7/6 the numerator is larger than the denominator, so the fraction is greater than 1." },
-        { "prompt": "How do you read the fraction 2/5?", "options": ["Two fifths", "Five halves", "Two fivers", "Fifths two"], "correctIndex": 0, "explanation": "You read the numerator first, then the denominator with the ending '-th(s)'." },
-        { "prompt": "Which fraction is the smallest?", "options": ["1/2", "1/8", "1/4", "1/3"], "correctIndex": 1, "explanation": "With the same numerator, the larger the denominator, the smaller the fraction: 1/8 is the smallest." },
-        { "prompt": "What is the denominator of 7/9?", "options": ["7", "9", "16", "2"], "correctIndex": 1, "explanation": "The denominator is below the fraction bar, here it's 9." }
+        { "type": "multiple-choice", "prompt": "What does the denominator of a fraction show?", "options": ["The total number of parts", "The number of parts taken", "The result of a division", "The greatest common divisor"], "correctIndex": 0, "explanation": "The denominator shows how many parts the whole is divided into." },
+        { "type": "lueckentext", "prompt": "The number above the fraction bar, showing how many parts are meant, is called the ___.", "correctAnswer": "numerator", "explanation": "The numerator sits above the fraction bar and shows how many parts are meant." },
+        { "type": "multiple-choice", "prompt": "Which fraction represents 'three of four parts'?", "options": ["4/3", "3/4", "1/4", "3/3"], "correctIndex": 1, "explanation": "3/4 means 3 out of 4 equal parts." },
+        { "type": "multiple-choice", "prompt": "1/2 is equal in value to...", "options": ["2/4", "1/4", "3/4", "2/2"], "correctIndex": 0, "explanation": "2/4 simplifies to 1/2, so both are equal in size." },
+        { "type": "lueckentext", "prompt": "A fraction that describes exactly half of a whole is written as 1/___.", "correctAnswer": "2", "explanation": "1/2 means exactly half." },
+        { "type": "multiple-choice", "prompt": "A fraction with numerator = denominator (e.g. 4/4) equals...", "options": ["0", "1", "2", "1/2"], "correctIndex": 1, "explanation": "When the numerator and denominator are equal, the fraction always equals 1 whole." },
+        { "type": "multiple-choice", "prompt": "Which fraction is greater than 1?", "options": ["3/4", "5/5", "7/6", "2/3"], "correctIndex": 2, "explanation": "In 7/6 the numerator is larger than the denominator, so the fraction is greater than 1." },
+        { "type": "lueckentext", "prompt": "You read the fraction 2/5 as 'two ___'.", "correctAnswer": "fifths", "explanation": "You read the numerator first, then the denominator with the ending '-th(s)'." },
+        { "type": "multiple-choice", "prompt": "Which fraction is the smallest?", "options": ["1/2", "1/8", "1/4", "1/3"], "correctIndex": 1, "explanation": "With the same numerator, the larger the denominator, the smaller the fraction: 1/8 is the smallest." },
+        { "type": "multiple-choice", "prompt": "What is the denominator of 7/9?", "options": ["7", "9", "16", "2"], "correctIndex": 1, "explanation": "The denominator is below the fraction bar, here it's 9." }
       ]
     },
     {
@@ -24,16 +24,16 @@
       "title": "Simplifying and expanding",
       "difficulty": "mittel",
       "questions": [
-        { "prompt": "Simplify 6/8 completely.", "options": ["3/4", "2/3", "4/6", "1/2"], "correctIndex": 0, "explanation": "6/8 divided by 2 gives 3/4." },
-        { "prompt": "Simplify 10/15 completely.", "options": ["2/3", "1/2", "5/10", "3/5"], "correctIndex": 0, "explanation": "10/15 divided by 5 gives 2/3." },
-        { "prompt": "Expand 2/3 to the denominator 9.", "options": ["6/9", "4/9", "2/9", "8/9"], "correctIndex": 0, "explanation": "2/3 times 3/3 gives 6/9." },
-        { "prompt": "Expand 1/4 to the denominator 12.", "options": ["3/12", "4/12", "1/12", "12/12"], "correctIndex": 0, "explanation": "1/4 times 3/3 gives 3/12." },
-        { "prompt": "Which fraction is NOT fully simplified?", "options": ["1/2", "4/8", "3/5", "2/3"], "correctIndex": 1, "explanation": "4/8 can still be simplified to 1/2." },
-        { "prompt": "Simplify 12/16 completely.", "options": ["3/4", "4/5", "6/8", "2/3"], "correctIndex": 0, "explanation": "12/16 divided by 4 gives 3/4." },
-        { "prompt": "Which fraction results from expanding 3/5 by 4?", "options": ["12/20", "7/9", "3/20", "12/5"], "correctIndex": 0, "explanation": "Both numerator and denominator are multiplied by 4: 12/20." },
-        { "prompt": "Which two fractions are equal in value?", "options": ["2/3 and 4/6", "2/3 and 3/4", "2/3 and 1/3", "2/3 and 4/9"], "correctIndex": 0, "explanation": "4/6 simplifies to 2/3, so both are equal." },
-        { "prompt": "Simplify 9/12 as far as possible.", "options": ["3/4", "4/5", "2/3", "1/2"], "correctIndex": 0, "explanation": "9/12 divided by 3 gives 3/4." },
-        { "prompt": "Expand 5/6 to the denominator 18.", "options": ["15/18", "10/18", "5/18", "18/18"], "correctIndex": 0, "explanation": "5/6 times 3/3 gives 15/18." }
+        { "type": "multiple-choice", "prompt": "Simplify 6/8 completely.", "options": ["3/4", "2/3", "4/6", "1/2"], "correctIndex": 0, "explanation": "6/8 divided by 2 gives 3/4." },
+        { "type": "multiple-choice", "prompt": "Simplify 10/15 completely.", "options": ["2/3", "1/2", "5/10", "3/5"], "correctIndex": 0, "explanation": "10/15 divided by 5 gives 2/3." },
+        { "type": "lueckentext", "prompt": "Expanding 2/3 to the denominator 9 gives 6/___.", "correctAnswer": "9", "explanation": "2/3 times 3/3 gives 6/9." },
+        { "type": "multiple-choice", "prompt": "Expand 1/4 to the denominator 12.", "options": ["3/12", "4/12", "1/12", "12/12"], "correctIndex": 0, "explanation": "1/4 times 3/3 gives 3/12." },
+        { "type": "multiple-choice", "prompt": "Which fraction is NOT fully simplified?", "options": ["1/2", "4/8", "3/5", "2/3"], "correctIndex": 1, "explanation": "4/8 can still be simplified to 1/2." },
+        { "type": "multiple-choice", "prompt": "Simplify 12/16 completely.", "options": ["3/4", "4/5", "6/8", "2/3"], "correctIndex": 0, "explanation": "12/16 divided by 4 gives 3/4." },
+        { "type": "lueckentext", "prompt": "The word for a fraction that cannot be simplified any further is fully ___.", "correctAnswer": "reduced", "explanation": "A fraction with no common factor left between numerator and denominator is fully reduced." },
+        { "type": "multiple-choice", "prompt": "Which two fractions are equal in value?", "options": ["2/3 and 4/6", "2/3 and 3/4", "2/3 and 1/3", "2/3 and 4/9"], "correctIndex": 0, "explanation": "4/6 simplifies to 2/3, so both are equal." },
+        { "type": "multiple-choice", "prompt": "Simplify 9/12 as far as possible.", "options": ["3/4", "4/5", "2/3", "1/2"], "correctIndex": 0, "explanation": "9/12 divided by 3 gives 3/4." },
+        { "type": "multiple-choice", "prompt": "Expand 5/6 to the denominator 18.", "options": ["15/18", "10/18", "5/18", "18/18"], "correctIndex": 0, "explanation": "5/6 times 3/3 gives 15/18." }
       ]
     },
     {
@@ -41,16 +41,16 @@
       "title": "Adding and subtracting fractions",
       "difficulty": "schwer",
       "questions": [
-        { "prompt": "Calculate 1/4 + 1/2.", "options": ["2/6", "3/4", "1/6", "2/4"], "correctIndex": 1, "explanation": "1/2 equals 2/4, so 1/4 + 2/4 = 3/4." },
-        { "prompt": "Calculate 2/3 + 1/6.", "options": ["3/9", "5/6", "1/2", "3/6"], "correctIndex": 1, "explanation": "2/3 equals 4/6, so 4/6 + 1/6 = 5/6." },
-        { "prompt": "Calculate 1/3 + 1/3 + 1/3.", "options": ["1", "3/3", "2/3", "1/9"], "correctIndex": 0, "explanation": "Three thirds together make one whole: 1." },
-        { "prompt": "Calculate 3/4 - 1/4.", "options": ["1/2", "2/4", "1/4", "1"], "correctIndex": 0, "explanation": "3/4 - 1/4 = 2/4, which simplifies to 1/2." },
-        { "prompt": "Calculate 5/6 - 1/3.", "options": ["1/2", "4/6", "2/3", "1/6"], "correctIndex": 0, "explanation": "1/3 equals 2/6, so 5/6 - 2/6 = 3/6 = 1/2." },
-        { "prompt": "Calculate 1/2 + 1/3.", "options": ["5/6", "2/5", "1/6", "2/6"], "correctIndex": 0, "explanation": "With common denominator 6: 3/6 + 2/6 = 5/6." },
-        { "prompt": "Calculate 7/8 - 1/2.", "options": ["3/8", "6/8", "1/4", "1/8"], "correctIndex": 0, "explanation": "1/2 equals 4/8, so 7/8 - 4/8 = 3/8." },
-        { "prompt": "Calculate 1/5 + 2/5 + 1/5.", "options": ["4/5", "3/5", "4/15", "1"], "correctIndex": 0, "explanation": "With the same denominator you just add the numerators: 1+2+1=4, so 4/5." },
-        { "prompt": "Calculate 2/3 - 1/6.", "options": ["1/2", "3/6", "1/6", "5/6"], "correctIndex": 0, "explanation": "2/3 equals 4/6, so 4/6 - 1/6 = 3/6 = 1/2." },
-        { "prompt": "Calculate 3/5 + 3/10.", "options": ["9/10", "6/15", "3/10", "1"], "correctIndex": 0, "explanation": "3/5 equals 6/10, so 6/10 + 3/10 = 9/10." }
+        { "type": "multiple-choice", "prompt": "Calculate 1/4 + 1/2.", "options": ["2/6", "3/4", "1/6", "2/4"], "correctIndex": 1, "explanation": "1/2 equals 2/4, so 1/4 + 2/4 = 3/4." },
+        { "type": "multiple-choice", "prompt": "Calculate 2/3 + 1/6.", "options": ["3/9", "5/6", "1/2", "3/6"], "correctIndex": 1, "explanation": "2/3 equals 4/6, so 4/6 + 1/6 = 5/6." },
+        { "type": "lueckentext", "prompt": "Before adding fractions with different denominators, you must first find a common ___.", "correctAnswer": "denominator", "explanation": "A common denominator lets you add the numerators directly." },
+        { "type": "multiple-choice", "prompt": "Calculate 3/4 - 1/4.", "options": ["1/2", "2/4", "1/4", "1"], "correctIndex": 0, "explanation": "3/4 - 1/4 = 2/4, which simplifies to 1/2." },
+        { "type": "multiple-choice", "prompt": "Calculate 5/6 - 1/3.", "options": ["1/2", "4/6", "2/3", "1/6"], "correctIndex": 0, "explanation": "1/3 equals 2/6, so 5/6 - 2/6 = 3/6 = 1/2." },
+        { "type": "multiple-choice", "prompt": "Calculate 1/2 + 1/3.", "options": ["5/6", "2/5", "1/6", "2/6"], "correctIndex": 0, "explanation": "With common denominator 6: 3/6 + 2/6 = 5/6." },
+        { "type": "lueckentext", "prompt": "7/8 minus 1/2 equals ___/8.", "correctAnswer": "3", "explanation": "1/2 equals 4/8, so 7/8 - 4/8 = 3/8." },
+        { "type": "multiple-choice", "prompt": "Calculate 1/5 + 2/5 + 1/5.", "options": ["4/5", "3/5", "4/15", "1"], "correctIndex": 0, "explanation": "With the same denominator you just add the numerators: 1+2+1=4, so 4/5." },
+        { "type": "multiple-choice", "prompt": "Calculate 2/3 - 1/6.", "options": ["1/2", "3/6", "1/6", "5/6"], "correctIndex": 0, "explanation": "2/3 equals 4/6, so 4/6 - 1/6 = 3/6 = 1/2." },
+        { "type": "multiple-choice", "prompt": "Calculate 3/5 + 3/10.", "options": ["9/10", "6/15", "3/10", "1"], "correctIndex": 0, "explanation": "3/5 equals 6/10, so 6/10 + 3/10 = 9/10." }
       ]
     }
   ]

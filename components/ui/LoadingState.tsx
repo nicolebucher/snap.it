@@ -6,7 +6,7 @@ import { useLanguage } from "@/lib/i18n/language-context";
 // Simuliert Fortschritt, da die KI-Antwort nicht gestreamt wird und daher kein echter
 // Prozentwert verfügbar ist - nähert sich asymptotisch 92% an, springt bei Erfolg auf 100%,
 // sobald die Komponente durch das Ergebnis ersetzt wird.
-export function LoadingState() {
+export function LoadingState({ title }: { title?: string } = {}) {
   const { t } = useLanguage();
   const [progress, setProgress] = useState(4);
 
@@ -24,7 +24,7 @@ export function LoadingState() {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
       <div className="mb-4 h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-teal-400" />
-      <p className="text-lg font-medium">{t.loading.title}</p>
+      <p className="text-lg font-medium">{title ?? t.loading.title}</p>
       <p className="mb-4 text-sm text-zinc-400">{t.loading.subtitle}</p>
       <div className="h-1.5 w-64 overflow-hidden rounded-full bg-zinc-800">
         <div

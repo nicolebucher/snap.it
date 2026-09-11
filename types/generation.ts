@@ -9,7 +9,7 @@ export const schoolTypes = [
   "Berufsschule",
 ] as const;
 
-export const outputFormats = ["worksheet", "test", "game", "podcast"] as const;
+export const outputFormats = ["worksheet", "test", "game", "podcast", "spelling"] as const;
 export type OutputFormat = (typeof outputFormats)[number];
 
 // Alle Profilangaben sind bewusst optional - das Lernmaterial im Upload trägt den
@@ -112,16 +112,28 @@ export const testSchema = z.object({
 
 export const questionSchema = z
   .object({
+    type: z.enum(["multiple-choice", "lueckentext"]),
     prompt: z.string(),
-    options: z.array(z.string()).min(2).max(5),
-    correctIndex: z.number().int().min(0),
+    // nur "multiple-choice":
+    options: z.array(z.string()).min(2).max(5).optional(),
+    correctIndex: z.number().int().min(0).optional(),
+    // nur "lueckentext": "prompt" enthält eine "___"-Lücke, der Schüler tippt die Antwort.
+    correctAnswer: z.string().optional(),
     explanation: z.string(),
   })
-  // Verhindert eine Lösung, die nicht zur Aufgabe passt (out-of-range correctIndex).
-  .refine((q) => q.correctIndex < q.options.length, {
-    message: '"correctIndex" must be a valid 0-based index into "options" (correctIndex < options.length).',
-    path: ["correctIndex"],
-  });
+  // Verhindert eine Lösung, die nicht zur Aufgabe passt (fehlende/inkonsistente Felder je Typ).
+  .refine(
+    (q) => {
+      if (q.type === "multiple-choice") {
+        return !!q.options && q.correctIndex !== undefined && q.correctIndex < q.options.length;
+      }
+      return !!q.correctAnswer && q.correctAnswer.trim() !== "" && q.prompt.includes("___");
+    },
+    {
+      message:
+        'A "multiple-choice" question needs "options" and a valid "correctIndex"; a "lueckentext" question needs "correctAnswer" and a "___" gap in "prompt".',
+    }
+  );
 export type Question = z.infer<typeof questionSchema>;
 
 // Level bewusst länger (mind. 10 Aufgaben je Level).
@@ -147,3 +159,20 @@ export const podcastScriptSchema = z.object({
   script: z.string(),
 });
 export type PodcastScript = z.infer<typeof podcastScriptSchema>;
+
+// Rechtschreib-Diagnose: ein Satz mit Lücke ("___") an der Stelle des zu übenden Worts, plus
+// dessen korrekte Schreibweise. Der Schüler tippt die Antwort selbst (Produktion statt bloßer
+// Erkennung) - das eigentliche Problem laut Lehrer-Feedback ist ja das Schreiben, nicht das
+// Wiedererkennen unter Auswahlmöglichkeiten.
+export const spellingItemSchema = z.object({
+  number: z.number(),
+  sentence: z.string(),
+  correctSpelling: z.string(),
+});
+export type SpellingItem = z.infer<typeof spellingItemSchema>;
+
+export const spellingDiagnosticSchema = z.object({
+  title: z.string(),
+  items: z.array(spellingItemSchema).min(10).max(15),
+});
+export type SpellingDiagnostic = z.infer<typeof spellingDiagnosticSchema>;
