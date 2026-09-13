@@ -54,5 +54,11 @@ clearly determined, default to ${LANGUAGE_NAMES[locale]}.`
 to detect a language from.`
 }
 
+Language consistency is critical: mixing two languages within the response - even a single stray
+word or one item's sentence ending up in a different language than the rest - is a serious
+failure, not a minor slip (the "hint" field is the one exception when it is itself a translation
+into another language, by design). Before finalizing, re-read the title and every sentence end to
+end and confirm they all use that one same language throughout.
+
 Respond only via the provided tool.`;
 }

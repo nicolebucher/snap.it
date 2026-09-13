@@ -39,5 +39,10 @@ Detect the language used in the attached material and write the title and script
 language, even if it differs from the language of these instructions. If the material's language
 cannot be clearly determined, default to ${LANGUAGE_NAMES[locale]}.
 
+Language consistency is critical: mixing two languages in one script - even a single stray word
+or phrase in a different language than the rest - is a serious failure, not a minor slip. Before
+finalizing, re-read the entire title and script end to end and confirm every part uses that one
+same language throughout.
+
 Respond only via the provided tool.`;
 }

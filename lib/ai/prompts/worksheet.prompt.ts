@@ -60,6 +60,12 @@ questions, answers) in that same language, even if it differs from the language 
 instructions. If the material's language cannot be clearly determined (e.g. it's mostly numbers
 or diagrams), default to ${LANGUAGE_NAMES[locale]}.
 
+Language consistency is critical: mixing two languages in one response - even a single stray
+word, an option, or the "labels" object ending up in a different language than everything else -
+is a serious failure, not a minor slip. Before finalizing, re-read the ENTIRE response end to end
+(title, introduction, every task's question/options/pairs/answer, and labels) and confirm every
+single field uses that one same language throughout.
+
 Also return a "labels" object with these words translated into that SAME detected content
 language (these are used as printed headings on the worksheet, they must match the content
 language, not English): task (e.g. "Task"), points (e.g. "points"), totalPoints (e.g. "points

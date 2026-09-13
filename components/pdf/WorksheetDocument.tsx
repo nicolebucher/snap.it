@@ -20,6 +20,8 @@ const styles = StyleSheet.create({
   matchColumn: { width: "47%" },
   matchLine: { flexDirection: "row", marginBottom: 8 },
   matchBlank: { width: 22, borderBottom: "1pt solid #999999", marginRight: 6 },
+  solutionsTitle: { fontSize: 16, fontWeight: 700, marginBottom: 12 },
+  solutionRow: { marginBottom: 8 },
 });
 
 function TaskBody({ task }: { task: Task }) {
@@ -114,6 +116,22 @@ export function WorksheetDocument({ data, profile }: { data: WorksheetData; prof
             </View>
             <Text>{task.question}</Text>
             <TaskBody task={task} />
+          </View>
+        ))}
+      </Page>
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.brand}>snap.it</Text>
+        <Text style={styles.solutionsTitle}>
+          {labels.solutions} — {data.title}
+        </Text>
+        {data.tasks.map((task) => (
+          <View key={task.number} style={styles.solutionRow}>
+            <Text>
+              <Text style={{ fontWeight: 700 }}>
+                {labels.task} {task.number}:{" "}
+              </Text>
+              {task.answer}
+            </Text>
           </View>
         ))}
       </Page>

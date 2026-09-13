@@ -50,6 +50,12 @@ language, even if it differs from the language of these instructions - the whole
 practice spelling IN that language. If it cannot be clearly determined, default to
 ${LANGUAGE_NAMES[locale]}.
 
+Language consistency is critical: mixing two languages in one response - even a single stray
+word, an option, or the "labels" object ending up in a different language than everything else -
+is a serious failure, not a minor slip. Before finalizing, re-read the ENTIRE response end to end
+(introduction, every task's question/options/answer, and labels) and confirm every single field
+uses that one same language throughout.
+
 Also return a "labels" object with these words translated into that SAME content language (used
 as printed headings on the worksheet): task (e.g. "Task"), points (e.g. "points"), totalPoints
 (e.g. "points total"), solutions (e.g. "Solutions"), name (e.g. "Name"), date (e.g. "Date"), grade

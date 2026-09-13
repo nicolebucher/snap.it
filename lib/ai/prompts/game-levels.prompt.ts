@@ -53,6 +53,11 @@ Detect the language used in the attached material and write all content (titles,
 options, explanations) in that same language, even if it differs from the language of these
 instructions. If the material's language cannot be clearly determined (e.g. it's mostly numbers
 or diagrams), default to ${LANGUAGE_NAMES[locale]}.
+
+Language consistency is critical: mixing two languages in one response - even a single stray
+word or option ending up in a different language than everything else - is a serious failure, not
+a minor slip. Before finalizing, re-read every level and question end to end and confirm every
+single field uses that one same language throughout.
 The "difficulty" field itself must still use exactly one of these literal values: "leicht" (easy), "mittel" (medium), "schwer" (hard) - regardless of the response language.
 
 Respond only via the provided tool.`;

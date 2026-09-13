@@ -44,6 +44,8 @@ const en = {
     game: { label: "Learning game", description: "Play through levels and earn points" },
     podcast: { label: "Podcast", description: "An MP3 episode you can listen to" },
     spelling: { label: "Writing Skills", description: "A quick check, then a worksheet built around your gaps" },
+    betaBadge: "Beta",
+    comingSoonBadge: "Coming soon",
   },
   wizard: {
     submit: "Create material",
@@ -184,6 +186,8 @@ const de: typeof en = {
     game: { label: "Lernspiel", description: "Level spielen und Punkte sammeln" },
     podcast: { label: "Podcast", description: "Eine MP3-Folge zum Anhören" },
     spelling: { label: "Besser schreiben", description: "Erst ein kurzer Check, dann ein Arbeitsblatt für deine Lücken" },
+    betaBadge: "Beta",
+    comingSoonBadge: "Bald verfügbar",
   },
   wizard: {
     submit: "Material erstellen",
