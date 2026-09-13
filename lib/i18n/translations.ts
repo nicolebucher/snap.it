@@ -10,6 +10,7 @@ const en = {
     cta: "Get started",
   },
   profile: {
+    heading: "Your details",
     hint: "All fields are optional — they just help the AI match the right level.",
     grade: "Grade (optional)",
     schoolType: "School type (optional)",
@@ -28,6 +29,7 @@ const en = {
     Berufsschule: "Vocational school",
   } as Record<string, string>,
   upload: {
+    heading: "Upload material",
     dragText: "Upload your study material (PDF, JPG or PNG, one or more files) — click or drag & drop",
     addMore: "Add more files",
     compressing: "Optimizing image…",
@@ -152,6 +154,7 @@ const de: typeof en = {
     cta: "Jetzt starten",
   },
   profile: {
+    heading: "Deine Angaben",
     hint: "Alle Angaben sind optional — sie helfen der KI nur, das Niveau besser zu treffen.",
     grade: "Klasse (optional)",
     schoolType: "Schulart (optional)",
@@ -170,6 +173,7 @@ const de: typeof en = {
     Berufsschule: "Berufsschule",
   } as Record<string, string>,
   upload: {
+    heading: "Material hochladen",
     dragText: "Lernmaterial hochladen (PDF, JPG oder PNG, eine oder mehrere Dateien) — per Klick oder Drag & Drop",
     addMore: "Weitere Dateien hinzufügen",
     compressing: "Bild wird optimiert…",

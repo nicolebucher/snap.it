@@ -14,6 +14,7 @@ export function ProfileForm({
 
   return (
     <div className="mb-6">
+      <p className="mb-2 text-sm font-medium">{t.profile.heading}</p>
       <p className="mb-2 text-sm text-zinc-400">{t.profile.hint}</p>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm font-medium">
