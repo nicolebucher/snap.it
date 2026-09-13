@@ -72,7 +72,7 @@ export function FileUpload({
 
   return (
     <div className="mb-6">
-      <p className="mb-2 text-sm font-medium">{t.upload.heading}</p>
+      <p className="mb-2 text-sm font-bold">{t.upload.heading}</p>
       <div
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {

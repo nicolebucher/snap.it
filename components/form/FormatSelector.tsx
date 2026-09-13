@@ -48,7 +48,7 @@ export function FormatSelector({
 
   return (
     <div className="mb-6">
-      <p className="mb-2 text-sm font-medium">{t.format.heading}</p>
+      <p className="mb-2 text-sm font-bold">{t.format.heading}</p>
       <div className="grid gap-3 sm:grid-cols-2">
         {formats.map((f) => {
           const Icon = ICONS[f.value];
