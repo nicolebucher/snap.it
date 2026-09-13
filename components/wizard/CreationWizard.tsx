@@ -357,8 +357,8 @@ export function CreationWizard() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <ProfileForm profile={profile} onChange={setProfile} />
       <FileUpload files={files} onChange={setFiles} />
+      <ProfileForm profile={profile} onChange={setProfile} />
       {format === "spelling" && files.length === 0 && (
         <p className="mb-4 -mt-2 text-sm text-zinc-400">{t.spelling.uploadOptionalHint}</p>
       )}

@@ -17,18 +17,25 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("en");
 
   useEffect(() => {
+    // Reading the persisted/browser-derived locale after mount (not during the initial
+    // render) is intentional: it keeps server and first client render both at the "en"
+    // default, avoiding a hydration mismatch, then syncs from these external sources.
+    let stored: string | null = null;
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === "en" || stored === "de") {
-        // Reading the persisted choice after mount (not during the initial render) is
-        // intentional: it keeps server and first client render both at the "en" default,
-        // avoiding a hydration mismatch, then syncs from the external localStorage value.
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setLocaleState(stored);
-      }
+      stored = localStorage.getItem(STORAGE_KEY);
     } catch {
-      // localStorage unavailable (private mode etc.) - keep default locale
+      // localStorage unavailable (private mode etc.)
     }
+    if (stored === "en" || stored === "de") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLocaleState(stored);
+      return;
+    }
+    // No stored preference yet (first-ever visit) - default to the browser's language
+    // setting instead of always assuming English, so a German-language browser lands on
+    // the German UI without the visitor having to switch it manually.
+    const browserLocale: Locale = navigator.language?.toLowerCase().startsWith("de") ? "de" : "en";
+    setLocaleState(browserLocale);
   }, []);
 
   function setLocale(next: Locale) {
