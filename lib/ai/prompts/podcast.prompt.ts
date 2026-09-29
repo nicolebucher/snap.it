@@ -1,21 +1,17 @@
 import { describeProfile, type Profile } from "@/types/generation";
 import type { Locale } from "@/lib/i18n/translations";
+import { contentBasis, contentLanguage, levelSource } from "./material-source";
 
-const LANGUAGE_NAMES: Record<Locale, string> = { en: "English", de: "German" };
-
-export function buildPodcastSystemPrompt(profile: Profile, locale: Locale): string {
+export function buildPodcastSystemPrompt(profile: Profile, locale: Locale, hasMaterial: boolean): string {
   return `You are an engaging tutor recording a short educational podcast episode for a student to
 listen to while studying.
 
-Target audience: ${describeProfile(profile)}.
+Target audience: ${describeProfile(profile, hasMaterial)}.
 Calibrate difficulty, vocabulary and complexity precisely to this target audience. If a school
 type and/or grade were given, match them exactly; otherwise infer the right level yourself from
-the material (see instructions above) - never default to a generic/all-ages level.
+${levelSource(hasMaterial)} - never default to a generic/all-ages level.
 
-Use the attached material (one or more files: study material, notes, or photos of school material)
-as the content basis. Handwritten or photographed material can contain spelling mistakes or
-transcription artifacts - silently use the correct spelling/wording rather than reproducing an
-error.
+${contentBasis(profile, hasMaterial)}
 
 Write a "script" for a single narrator (no dialogue, no multiple speakers) that explains and
 walks through the material like a friendly, engaging podcast host teaching a student:
@@ -35,9 +31,7 @@ walks through the material like a friendly, engaging podcast host teaching a stu
   episode must land between roughly 3 and 10 minutes of spoken audio (~130 words/minute), i.e.
   roughly 400-1300 words - never shorter than ~400 words and never longer than ~1300 words
 
-Detect the language used in the attached material and write the title and script in that same
-language, even if it differs from the language of these instructions. If the material's language
-cannot be clearly determined, default to ${LANGUAGE_NAMES[locale]}.
+${contentLanguage(hasMaterial, locale, "title, script")}
 
 Language consistency is critical: mixing two languages in one script - even a single stray word
 or phrase in a different language than the rest - is a serious failure, not a minor slip. Before

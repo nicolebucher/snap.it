@@ -56,11 +56,6 @@ export async function POST(request: NextRequest) {
   if (!isOutputFormat(format)) {
     return NextResponse.json({ error: messages.invalidFormat }, { status: 400 });
   }
-  // Nur "spelling" kommt ohne Upload aus: die Diagnose selbst deckt die Rechtschreibprobleme
-  // auf, statt sie aus hochgeladenem Material abzuleiten.
-  if (files.length === 0 && format !== "spelling") {
-    return NextResponse.json({ error: messages.missingFile }, { status: 400 });
-  }
   if (files.length > MAX_FILES) {
     return NextResponse.json({ error: messages.tooManyFiles }, { status: 400 });
   }
@@ -82,6 +77,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: messages.invalidProfile }, { status: 400 });
   }
   const profile = profileResult.data;
+
+  // Ohne Upload braucht die KI ein Thema (Fach oder Notiz), aus dem sie den Inhalt ableitet.
+  // Nur "spelling" kommt ganz ohne aus: die Diagnose selbst deckt die Rechtschreibprobleme auf.
+  if (files.length === 0 && format !== "spelling" && !profile.subject && !profile.notes) {
+    return NextResponse.json({ error: messages.missingTopic }, { status: 400 });
+  }
 
   try {
     const fileBlocks = await filesToClaudeBlocks(files);

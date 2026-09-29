@@ -19,8 +19,8 @@ export async function generatePodcastScript(
   }
 
   return generateStructuredOutput({
-    system: buildPodcastSystemPrompt(profile, locale),
-    userContent: [...fileBlocks, { type: "text", text: "Write the podcast script for this material." }],
+    system: buildPodcastSystemPrompt(profile, locale, fileBlocks.length > 0),
+    userContent: [...fileBlocks, { type: "text", text: fileBlocks.length > 0 ? "Write the podcast script for this material." : "Write the podcast script for this topic." }],
     schema: podcastScriptSchema,
     toolName: "create_podcast_script",
     toolDescription: "Creates a single-narrator podcast script based on the study material.",

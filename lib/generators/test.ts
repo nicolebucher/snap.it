@@ -14,8 +14,8 @@ export async function generateTest(profile: Profile, fileBlocks: ClaudeFileBlock
   const data = isMockMode()
     ? testSchema.parse(MOCKS[locale])
     : await generateStructuredOutput({
-        system: buildTestSystemPrompt(profile, locale),
-        userContent: [...fileBlocks, { type: "text", text: "Create a matching test from this material." }],
+        system: buildTestSystemPrompt(profile, locale, fileBlocks.length > 0),
+        userContent: [...fileBlocks, { type: "text", text: fileBlocks.length > 0 ? "Create a matching test from this material." : "Create the test for this topic." }],
         schema: testSchema,
         toolName: "create_test",
         toolDescription: "Creates a structured test (classroom exam) based on the study material.",

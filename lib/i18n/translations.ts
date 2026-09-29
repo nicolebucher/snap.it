@@ -29,7 +29,7 @@ const en = {
     Berufsschule: "Vocational school",
   } as Record<string, string>,
   upload: {
-    heading: "Upload material",
+    heading: "Upload material (optional)",
     dragText: "Upload your study material (PDF, JPG or PNG, one or more files) — click or drag & drop",
     addMore: "Add more files",
     compressing: "Optimizing image…",
@@ -38,6 +38,7 @@ const en = {
     errorTooLarge: (maxMb: number) => `These files together are too large (max. ${maxMb} MB total). Try removing one or use smaller photos.`,
     remove: "Remove",
     privacyNote: "Your files are only used to create your material and then deleted automatically.",
+    noUploadHint: "No material at hand? Just enter a subject or a topic below — the AI creates everything from that.",
   },
   format: {
     heading: "What would you like to create?",
@@ -136,7 +137,7 @@ const en = {
     tooManyRequests: "Too many requests. Please wait a moment and try again.",
     invalidRequest: "Invalid request.",
     invalidFormat: "Invalid format.",
-    missingFile: "Please upload at least one file.",
+    missingTopic: "Please upload material or enter a subject or topic.",
     tooManyFiles: "Too many files. Please upload fewer files.",
     fileTypeInvalid: "Please upload only PDF, JPG or PNG files.",
     fileTooLarge: "These files together are too large (max. 4 MB total). Try removing one or use smaller photos.",
@@ -173,7 +174,7 @@ const de: typeof en = {
     Berufsschule: "Berufsschule",
   } as Record<string, string>,
   upload: {
-    heading: "Material hochladen",
+    heading: "Material hochladen (optional)",
     dragText: "Lernmaterial hochladen (PDF, JPG oder PNG, eine oder mehrere Dateien) — per Klick oder Drag & Drop",
     addMore: "Weitere Dateien hinzufügen",
     compressing: "Bild wird optimiert…",
@@ -182,6 +183,7 @@ const de: typeof en = {
     errorTooLarge: (maxMb: number) => `Diese Dateien sind zusammen zu groß (max. ${maxMb} MB insgesamt). Entferne eine oder nutze kleinere Fotos.`,
     remove: "Entfernen",
     privacyNote: "Deine Dateien werden nur zur Erstellung genutzt und danach automatisch gelöscht.",
+    noUploadHint: "Kein Material zur Hand? Gib unten einfach ein Fach oder ein Thema ein — die KI erstellt alles daraus.",
   },
   format: {
     heading: "Was möchtest du erstellen?",
@@ -280,7 +282,7 @@ const de: typeof en = {
     tooManyRequests: "Zu viele Anfragen. Bitte warte einen Moment und versuche es erneut.",
     invalidRequest: "Ungültige Anfrage.",
     invalidFormat: "Ungültiges Format.",
-    missingFile: "Bitte lade mindestens eine Datei hoch.",
+    missingTopic: "Bitte lade Material hoch oder gib ein Fach oder Thema ein.",
     tooManyFiles: "Zu viele Dateien. Bitte lade weniger Dateien hoch.",
     fileTypeInvalid: "Bitte lade nur PDF-, JPG- oder PNG-Dateien hoch.",
     fileTooLarge: "Diese Dateien sind zusammen zu groß (max. 4 MB insgesamt). Entferne eine oder nutze kleinere Fotos.",

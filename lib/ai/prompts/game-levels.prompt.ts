@@ -1,20 +1,16 @@
 import { describeProfile, type Profile } from "@/types/generation";
 import type { Locale } from "@/lib/i18n/translations";
+import { contentBasis, contentLanguage, levelSource } from "./material-source";
 
-const LANGUAGE_NAMES: Record<Locale, string> = { en: "English", de: "German" };
-
-export function buildGameLevelsSystemPrompt(profile: Profile, locale: Locale): string {
+export function buildGameLevelsSystemPrompt(profile: Profile, locale: Locale, hasMaterial: boolean): string {
   return `You create the content for a quiz-style learning game for a student.
 
-Target audience: ${describeProfile(profile)}.
+Target audience: ${describeProfile(profile, hasMaterial)}.
 Calibrate difficulty, vocabulary and complexity precisely to this target audience. If a school
 type and/or grade were given, match them exactly; otherwise infer the right level yourself from
-the material (see instructions above) - never default to a generic/all-ages level.
+${levelSource(hasMaterial)} - never default to a generic/all-ages level.
 
-Use the attached material (one or more files: study material, notes, or photos of school material)
-as the content basis. Handwritten or photographed material can contain spelling mistakes or
-transcription artifacts - silently use the correct spelling/wording in your output rather than
-reproducing an error, unless the error itself is the point of a question.
+${contentBasis(profile, hasMaterial)}
 Create 2 to 5 levels that turn the material into an engaging quiz. Levels are NOT a strict linear progression the student must unlock in order - the
 player can jump into any level directly. Instead, each level should represent a distinct
 sub-topic, chapter, or skill/question type found in the material (e.g. different chapters,
@@ -49,10 +45,7 @@ translations as the options, or always the same translation direction) - do not 
 framings for the same vocabulary set, since that produces items where more than one option could
 defensibly be "correct".
 
-Detect the language used in the attached material and write all content (titles, questions,
-options, explanations) in that same language, even if it differs from the language of these
-instructions. If the material's language cannot be clearly determined (e.g. it's mostly numbers
-or diagrams), default to ${LANGUAGE_NAMES[locale]}.
+${contentLanguage(hasMaterial, locale, "titles, questions, options, explanations")}
 
 Language consistency is critical: mixing two languages in one response - even a single stray
 word or option ending up in a different language than everything else - is a serious failure, not

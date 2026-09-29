@@ -18,8 +18,8 @@ export async function generateWorksheet(
   const data = isMockMode()
     ? worksheetSchema.parse(MOCKS[locale])
     : await generateStructuredOutput({
-        system: buildWorksheetSystemPrompt(profile, locale),
-        userContent: [...fileBlocks, { type: "text", text: "Create a matching worksheet from this material." }],
+        system: buildWorksheetSystemPrompt(profile, locale, fileBlocks.length > 0),
+        userContent: [...fileBlocks, { type: "text", text: fileBlocks.length > 0 ? "Create a matching worksheet from this material." : "Create the worksheet for this topic." }],
         schema: worksheetSchema,
         toolName: "create_worksheet",
         toolDescription: "Creates a structured practice worksheet based on the study material.",

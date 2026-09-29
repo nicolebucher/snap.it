@@ -25,7 +25,7 @@ export type Profile = z.infer<typeof profileSchema>;
 // Nur für den (englischen) System-Prompt gedacht - beschreibt die Zielgruppe fürs Modell,
 // unabhängig von der später gewählten Ausgabesprache des generierten Inhalts. Wenn Angaben
 // fehlen: Oberschule (allgemeine Sekundarstufe) als Standardannahme, Klasse aus dem Material schätzen.
-export function describeProfile(profile: Profile): string {
+export function describeProfile(profile: Profile, hasMaterial = true): string {
   const parts: string[] = [];
   parts.push(
     profile.schoolType
@@ -35,7 +35,9 @@ export function describeProfile(profile: Profile): string {
   parts.push(
     profile.grade !== undefined
       ? `grade ${profile.grade}`
-      : "grade not given - estimate the appropriate grade level yourself from the complexity/topic of the uploaded material"
+      : hasMaterial
+        ? "grade not given - estimate the appropriate grade level yourself from the complexity/topic of the uploaded material"
+        : "grade not given - estimate the appropriate grade level yourself from the topic"
   );
   if (profile.subject) parts.push(`subject: ${profile.subject}`);
   if (profile.notes) parts.push(`the student's own note/request: "${profile.notes}" (take this into account for topic focus and content selection, as long as it doesn't conflict with the instructions above)`);

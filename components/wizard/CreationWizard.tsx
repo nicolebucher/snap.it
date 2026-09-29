@@ -72,9 +72,11 @@ export function CreationWizard() {
   const [loadingTitle, setLoadingTitle] = useState<string | undefined>(undefined);
 
   const totalSize = files.reduce((sum, file) => sum + file.size, 0);
-  // "spelling" is the one format that works without an upload - the diagnostic itself is what
-  // surfaces the student's actual gaps, rather than needing material to pull words from.
-  const canSubmit = (files.length > 0 || format === "spelling") && !!format && totalSize <= MAX_TOTAL_SIZE;
+  // Without an upload, the subject or note becomes the topic the AI builds from. "spelling" needs
+  // neither - the diagnostic itself is what surfaces the student's actual gaps.
+  const hasTopic = !!profile.subject?.trim() || !!profile.notes?.trim();
+  const canSubmit =
+    (files.length > 0 || hasTopic || format === "spelling") && !!format && totalSize <= MAX_TOTAL_SIZE;
 
   async function handleSubmit() {
     if (!canSubmit || !format) return;
@@ -358,6 +360,7 @@ export function CreationWizard() {
   return (
     <div className="mx-auto max-w-xl">
       <FileUpload files={files} onChange={setFiles} />
+      {files.length === 0 && <p className="mb-6 -mt-2 text-sm text-zinc-400">{t.upload.noUploadHint}</p>}
       <ProfileForm profile={profile} onChange={setProfile} />
       {format === "spelling" && files.length === 0 && (
         <p className="mb-4 -mt-2 text-sm text-zinc-400">{t.spelling.uploadOptionalHint}</p>

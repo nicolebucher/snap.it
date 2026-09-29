@@ -14,8 +14,8 @@ export async function generateGameLevels(profile: Profile, fileBlocks: ClaudeFil
   const data = isMockMode()
     ? gameSchema.parse(MOCKS[locale])
     : await generateStructuredOutput({
-        system: buildGameLevelsSystemPrompt(profile, locale),
-        userContent: [...fileBlocks, { type: "text", text: "Create the levels for the learning game from this material." }],
+        system: buildGameLevelsSystemPrompt(profile, locale, fileBlocks.length > 0),
+        userContent: [...fileBlocks, { type: "text", text: fileBlocks.length > 0 ? "Create the levels for the learning game from this material." : "Create the levels for the learning game for this topic." }],
         schema: gameSchema,
         toolName: "create_game_levels",
         toolDescription: "Creates structured quiz levels with questions based on the study material.",
