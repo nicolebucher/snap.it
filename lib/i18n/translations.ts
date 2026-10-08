@@ -108,7 +108,7 @@ const en = {
   },
   loading: {
     title: "Creating your material…",
-    subtitle: "This can take up to a minute.",
+    subtitle: "This can take a few minutes — especially for the learning game.",
   },
   error: {
     title: "Oops, that didn't work.",
@@ -143,6 +143,7 @@ const en = {
     fileTooLarge: "These files together are too large (max. 4 MB total). Try removing one or use smaller photos.",
     invalidProfile: "Please check your details.",
     generationFailed: "Generation failed. Please try again.",
+    unexpected: "The server didn't respond in time. Please try again — with a long PDF, uploading only the most important pages helps.",
   },
 };
 
@@ -253,7 +254,7 @@ const de: typeof en = {
   },
   loading: {
     title: "Dein Material wird erstellt…",
-    subtitle: "Das kann bis zu einer Minute dauern.",
+    subtitle: "Das kann ein paar Minuten dauern — besonders beim Lernspiel.",
   },
   error: {
     title: "Ups, das hat nicht geklappt.",
@@ -288,6 +289,7 @@ const de: typeof en = {
     fileTooLarge: "Diese Dateien sind zusammen zu groß (max. 4 MB insgesamt). Entferne eine oder nutze kleinere Fotos.",
     invalidProfile: "Bitte prüfe deine Angaben.",
     generationFailed: "Die Generierung ist fehlgeschlagen. Bitte versuche es erneut.",
+    unexpected: "Der Server hat nicht rechtzeitig geantwortet. Bitte versuche es erneut — bei einer langen PDF hilft es, nur die wichtigsten Seiten hochzuladen.",
   },
 };
 

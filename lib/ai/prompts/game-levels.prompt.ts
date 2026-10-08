@@ -11,7 +11,7 @@ type and/or grade were given, match them exactly; otherwise infer the right leve
 ${levelSource(hasMaterial)} - never default to a generic/all-ages level.
 
 ${contentBasis(profile, hasMaterial)}
-Create 2 to 5 levels that turn the material into an engaging quiz. Levels are NOT a strict linear progression the student must unlock in order - the
+Create 2 to 4 levels that turn the material into an engaging quiz. Levels are NOT a strict linear progression the student must unlock in order - the
 player can jump into any level directly. Instead, each level should represent a distinct
 sub-topic, chapter, or skill/question type found in the material (e.g. different chapters,
 vocabulary vs. grammar, theory vs. application) so a student can pick exactly what they want to
@@ -20,7 +20,7 @@ to increase from level to level).
 
 For every level:
 - a short, motivating title that names the specific sub-topic/category it covers
-- at least 10 (up to 15) questions, genuinely mixing TWO question types within each level (not
+- at least 8 (up to 12) questions, genuinely mixing TWO question types within each level (not
   all of one type) so the game doesn't feel repetitive:
   - "multiple-choice": "prompt" is the question, "options" has 3-4 choices with exactly one
     correct answer (correctIndex) - the wrong options must be plausible and genuinely tempting,

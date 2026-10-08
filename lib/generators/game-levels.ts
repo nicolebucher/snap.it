@@ -19,7 +19,7 @@ export async function generateGameLevels(profile: Profile, fileBlocks: ClaudeFil
         schema: gameSchema,
         toolName: "create_game_levels",
         toolDescription: "Creates structured quiz levels with questions based on the study material.",
-        // Bis zu 5 Level x 15 Fragen (inkl. Erklärungen) können 16k Tokens überschreiten und die
+        // Bis zu 4 Level x 12 Fragen (inkl. Erklärungen) können 16k Tokens überschreiten und die
         // Antwort mitten im JSON abschneiden - großzügig bemessen, um Trunkierung zu vermeiden.
         maxTokens: 32000,
       });

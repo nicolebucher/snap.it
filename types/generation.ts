@@ -138,19 +138,20 @@ export const questionSchema = z
   );
 export type Question = z.infer<typeof questionSchema>;
 
-// Level bewusst länger (mind. 10 Aufgaben je Level).
+// Level bewusst länger (mind. 8 Aufgaben je Level), aber gedeckelt, damit die Generierung
+// auch bei umfangreichem Material innerhalb des Server-Zeitlimits fertig wird.
 export const levelSchema = z.object({
   id: z.number(),
   title: z.string(),
   difficulty: z.enum(["leicht", "mittel", "schwer"]),
-  questions: z.array(questionSchema).min(10).max(15),
+  questions: z.array(questionSchema).min(8).max(12),
 });
 export type Level = z.infer<typeof levelSchema>;
 
 export const gameSchema = z.object({
   gameTitle: z.string(),
   subject: z.string(),
-  levels: z.array(levelSchema).min(2).max(5),
+  levels: z.array(levelSchema).min(2).max(4),
 });
 export type GameData = z.infer<typeof gameSchema>;
 

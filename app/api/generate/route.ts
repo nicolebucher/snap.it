@@ -17,8 +17,9 @@ import { slugify } from "@/lib/slugify";
 import { locales, t, type Locale } from "@/lib/i18n/translations";
 
 export const runtime = "nodejs";
-// Podcast-Generierung braucht Skript (Claude) + mehrere sequenzielle TTS-Chunks (ElevenLabs).
-export const maxDuration = 120;
+// Lernspiel (viele Level/Fragen) und Podcast (Skript + sequenzielle TTS-Chunks) brauchen bei
+// umfangreichem Material deutlich länger als 2 Minuten - bei 120s brach Vercel die Anfrage ab.
+export const maxDuration = 300;
 
 function isOutputFormat(value: unknown): value is OutputFormat {
   return typeof value === "string" && (outputFormats as readonly string[]).includes(value);

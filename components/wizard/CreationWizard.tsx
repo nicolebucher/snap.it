@@ -98,7 +98,7 @@ export function CreationWizard() {
       const json = await response.json().catch(() => null);
 
       if (!response.ok) {
-        throw new Error(json?.error ?? "Something went wrong.");
+        throw new Error(json?.error ?? t.serverErrors.unexpected);
       }
 
       if (format === "game") {
@@ -153,7 +153,7 @@ export function CreationWizard() {
       const response = await fetch("/api/generate", { method: "POST", body });
       const json = await response.json().catch(() => null);
       if (!response.ok) {
-        throw new Error(json?.error ?? "Something went wrong.");
+        throw new Error(json?.error ?? t.serverErrors.unexpected);
       }
       const blob = base64ToBlob(json.pdfBase64, "application/pdf");
       const url = URL.createObjectURL(blob);
